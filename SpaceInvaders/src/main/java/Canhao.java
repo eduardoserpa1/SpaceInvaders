@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
@@ -10,8 +12,16 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
     private int RELOAD_TIME = 100000000; // Time is in nanoseconds
     private int shot_timer = 0;
 
+    private Animator anime;
+
     public Canhao(int px,int py){
         super(px,py);
+        anime = new Animator("C:\\Users\\Eduardo\\Desktop\\Ambiente\\SpaceInvaders\\SpaceInvaders\\src\\main\\resources\\canon");
+        try {
+            anime.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -61,8 +71,11 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void Draw(GraphicsContext graphicsContext) {
-        graphicsContext.setFill(Paint.valueOf("#FF0000"));
-        graphicsContext.fillRect(getX(), getY()+16, 32, 32);
-        graphicsContext.fillRect(getX()+8, getY()-16, 16, 48);
+        graphicsContext.drawImage(anime.updateCenter(2),(double)getX(), (double)getY()+16, (double)64, (double)64);
+        
+        //graphicsContext.setFill(Paint.valueOf("#FF0000"));
+        //graphicsContext.fillRect(getX(), getY()+16, 32, 32);
+        //graphicsContext.fillRect(getX()+8, getY()-16, 16, 48);
+        
     }
 }

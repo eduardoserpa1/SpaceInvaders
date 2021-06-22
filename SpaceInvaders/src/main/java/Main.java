@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -21,6 +22,11 @@ public class Main extends Application {
         // Initialize Window
         stage.setTitle(Params.WINDOW_TITLE);
         stage.setResizable(false);
+
+        Image img = new Image("bg.png",Params.WINDOW_WIDTH,Params.WINDOW_HEIGHT,true,true);
+
+        Animator anime = new Animator("C:\\Users\\Eduardo\\Desktop\\Ambiente\\SpaceInvaders\\SpaceInvaders\\src\\main\\resources\\canon");
+        anime.load();
 
         Group root = new Group();
         Scene scene = new Scene( root );
@@ -48,21 +54,25 @@ public class Main extends Application {
         new AnimationTimer()
         {
             long lastNanoTime = System.nanoTime();
-
+            int i=0;
             @Override
             public void handle(long currentNanoTime)
             {
                 long deltaTime = currentNanoTime - lastNanoTime;
 
                 Game.getInstance().Update(currentNanoTime, deltaTime);
-                gc.clearRect(0, 0, Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
+                //runBackgroundAnimation(img, gc);
+                gc.drawImage(img,0,i,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
+                gc.drawImage(img,0,i - Params.WINDOW_HEIGHT,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
                 gc.fillText("Pontos: "+Game.getInstance().getPontos(), 10, 10);
                 Game.getInstance().Draw(gc);
                 if (Game.getInstance().isGameOver()){
                     stop();
                 }
-                gc.setFill(Color.RED);
-                gc.clearRect( 10,10,100,100);
+                if(i >= Params.WINDOW_HEIGHT)
+                    i=0;
+                i++;
+                
                 lastNanoTime = currentNanoTime;
             }
 
@@ -70,6 +80,10 @@ public class Main extends Application {
 
         // Show window
         stage.show();
+    }
+    
+    public static void runBackgroundAnimation(Image img,GraphicsContext gc){
+        gc.drawImage(img,0,0,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
     }
 
     public static void main(String args[]) {

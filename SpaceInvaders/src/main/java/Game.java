@@ -56,7 +56,7 @@ public class Game {
         activeChars = new LinkedList<>();
 
         // Adiciona o canhao
-        canhao = new Canhao(400,550);
+        canhao = new Canhao(350,500);
         activeChars.add(canhao);
 
         // Adiciona bolas
