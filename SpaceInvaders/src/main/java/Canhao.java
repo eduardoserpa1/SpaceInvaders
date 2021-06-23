@@ -71,11 +71,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void Draw(GraphicsContext graphicsContext) {
-        graphicsContext.drawImage(anime.updateCenter(2),(double)getX(), (double)getY()+16, (double)64, (double)64);
-        
-        //graphicsContext.setFill(Paint.valueOf("#FF0000"));
-        //graphicsContext.fillRect(getX(), getY()+16, 32, 32);
-        //graphicsContext.fillRect(getX()+8, getY()-16, 16, 48);
+        graphicsContext.drawImage(anime.updateCenter(5),(double)getX(), (double)getY()+16, (double)64, (double)64);
         
     }
 }

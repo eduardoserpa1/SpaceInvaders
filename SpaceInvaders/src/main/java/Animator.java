@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 public class Animator {
     
     private Path url;
-    private int coef=0,count;
+    private int coef=0,count=0;
     public LinkedList<Image> frames;
 
     public Animator(String url){
