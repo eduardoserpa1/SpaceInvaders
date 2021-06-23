@@ -17,6 +17,7 @@ public class Animator {
 
     public Animator(String url){
         frames = new LinkedList<Image>();
+        System.out.println(System.getProperty("user.dir") + "\\" + url);
         this.url = Paths.get(url);
     }
 

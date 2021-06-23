@@ -9,7 +9,7 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein, Rafael Copstein
  */
 public class Canhao extends BasicElement implements KeyboardCtrl{
-    private int RELOAD_TIME = 100000000; // Time is in nanoseconds
+    private int RELOAD_TIME = 500000000; // Time is in nanoseconds
     private int shot_timer = 0;
 
     private Animator anime;
@@ -51,7 +51,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
         }
         if (keyCode == KeyCode.SPACE){
             if (shot_timer <= 0) {
-                Game.getInstance().addChar(new Shot(getX()+16,getY()-32));
+                Game.getInstance().addChar(new Shot(getX()+32,getY()-32));
                 shot_timer = RELOAD_TIME;
             }
         }
