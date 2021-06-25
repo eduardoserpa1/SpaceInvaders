@@ -8,6 +8,8 @@ import javafx.scene.paint.Paint;
 public class Ball extends BasicElement{
     public Ball(int px,int py){
         super(px,py);
+        altura=32;
+        largura=32;
     }
 
     @Override
@@ -35,6 +37,6 @@ public class Ball extends BasicElement{
 
     public void Draw(GraphicsContext graphicsContext){
         graphicsContext.setFill(Paint.valueOf("#FFFF00")); 
-        graphicsContext.fillOval(getX(), getY(), 32, 32);
+        graphicsContext.fillOval(getX(), getY(), getLargura(), getAltura());
     }
 }

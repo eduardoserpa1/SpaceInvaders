@@ -25,9 +25,6 @@ public class Main extends Application {
 
         Image img = new Image("background\\bg.png",Params.WINDOW_WIDTH,Params.WINDOW_HEIGHT,true,true);
 
-        Animator anime = new Animator("src\\main\\resources\\canon");
-        anime.load();
-
         Group root = new Group();
         Scene scene = new Scene( root );
         stage.setScene( scene );
@@ -61,14 +58,17 @@ public class Main extends Application {
                 long deltaTime = currentNanoTime - lastNanoTime;
 
                 Game.getInstance().Update(currentNanoTime, deltaTime);
-                //runBackgroundAnimation(img, gc);
+                
                 gc.drawImage(img,0,screenroll,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
                 gc.drawImage(img,0, (screenroll - Params.WINDOW_HEIGHT) ,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
+
                 gc.fillText("Pontos: "+Game.getInstance().getPontos(), 10, 10);
                 Game.getInstance().Draw(gc);
+
                 if (Game.getInstance().isGameOver()){
                     stop();
                 }
+
                 if(screenroll >= Params.WINDOW_HEIGHT)
                     screenroll=0;
                 screenroll++;
