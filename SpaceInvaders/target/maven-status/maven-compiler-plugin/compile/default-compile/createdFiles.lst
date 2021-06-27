@@ -1,12 +1,15 @@
 BasicElement.class
+Enemy3.class
 KeyboardCtrl.class
-Ball.class
 Character.class
 Animator.class
+Enemy4.class
 Main$1.class
 Params.class
 Main.class
 Shot.class
+Enemy1.class
+Enemy2.class
 Game.class
 Canhao.class
 Pinguim.class

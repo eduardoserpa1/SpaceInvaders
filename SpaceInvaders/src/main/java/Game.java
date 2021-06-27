@@ -13,6 +13,7 @@ public class Game {
     private List<Character> activeChars;
     private boolean gameOver;
     private int pontos;
+    int frame=0;
 
     private Game(){
         gameOver = false;
@@ -56,20 +57,18 @@ public class Game {
         activeChars = new LinkedList<>();
 
         // Adiciona o canhao
-        canhao = new Canhao(350,510);
+        canhao = new Canhao(350,510,4);
         activeChars.add(canhao);
 
         // Adiciona bolas
-        for(int i=0; i<7; i++){
-            activeChars.add(new Ball(100+(1*32),60+i*32));
-         
-            activeChars.add(new Ball(100+(6*32),60+i*32));
+        for(int i=0; i<20; i++){
+            activeChars.add(new Enemy1(50+(i*50),10));
+            
         }
-        //activeChars.add(new Ball(100,60));
-
-        // Adiciona pinguim
-        //activeChars.add(new Pinguim(100,270));
-        //activeChars.add(new Pinguim(10,300));
+        for(int i=0; i<30; i++){
+            //activeChars.add(new Enemy2(50+(i*50),100));
+        }
+       
 
         for(Character c:activeChars){
             c.start();
@@ -81,6 +80,11 @@ public class Game {
             return;
         }
 
+        frame++;
+
+        if(frame%20==0)
+            setWave(frame/60);
+
         for(int i=0;i<activeChars.size();i++){
             Character este = activeChars.get(i);
             este.Update(deltaTime);
@@ -91,6 +95,11 @@ public class Game {
                 }
             }
         }
+    }
+    public void setWave(int sec){
+        //System.out.println(sec);
+        activeChars.add(new Enemy2(10,100,1));
+        activeChars.add(new Enemy2(Params.WINDOW_WIDTH-34,100,-1));
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {

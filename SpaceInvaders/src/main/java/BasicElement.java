@@ -13,11 +13,17 @@ public abstract class BasicElement implements Character{
     boolean colidiu = false;
     boolean active = true;
     int posX, posY;
-    int speed = 3;
+    int speed = 2;
+    //boolean isMoving = false;
 
     public BasicElement(int startX,int startY){
         posX = startX;
         posY = startY;
+    }
+    public BasicElement(int startX,int startY,int startSpeed){
+        posX = startX;
+        posY = startY;
+        speed = startSpeed;
     }
 
     @Override
@@ -65,7 +71,16 @@ public abstract class BasicElement implements Character{
     }
 
     private boolean validaColisao(Object e, Object e2){
-        if(e instanceof Ball && e2 instanceof Ball){
+        if(e instanceof Enemy1 && e2 instanceof Enemy1){
+            return false;
+        }
+        if(e instanceof Enemy2 && e2 instanceof Enemy2){
+            return false;
+        }
+        if(e instanceof Enemy1 && e2 instanceof Enemy2){
+            return false;
+        }
+        if(e instanceof Enemy2 && e2 instanceof Enemy1){
             return false;
         }
 

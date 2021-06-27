@@ -6,8 +6,11 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein and Rafael Copstein
  */
 public class Shot extends BasicElement{
-    public Shot(int px,int py){
+    Object shooter;
+
+    public Shot(int px,int py, Object shooter){
         super(px,py);
+        this.shooter = shooter;
     }
 
     @Override
@@ -19,7 +22,7 @@ public class Shot extends BasicElement{
     @Override
     public void testaColisao(Character outro){
         // Não verifica colisão de um tiro com outro tiro
-        if (outro instanceof Shot){
+        if (outro instanceof Shot || ( shooter instanceof Enemy3 && !(outro instanceof Canhao) ) ){
             return;
         }else{
             super.testaColisao(outro);

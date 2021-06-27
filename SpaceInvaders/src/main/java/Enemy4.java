@@ -5,8 +5,8 @@ import javafx.scene.paint.Paint;
  * Represents a simple ball that crosses the screen over and over again
  * @author Bernardo Copstein and Rafael Copstein
  */
-public class Ball extends BasicElement{
-    public Ball(int px,int py){
+public class Enemy4 extends BasicElement{
+    public Enemy4(int px,int py){
         super(px,py);
         altura=32;
         largura=32;

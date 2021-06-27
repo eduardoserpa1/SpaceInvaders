@@ -14,8 +14,8 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     private Animator anime;
 
-    public Canhao(int px,int py){
-        super(px,py);
+    public Canhao(int px,int py,int speed){
+        super(px,py,speed);
         
         anime = new Animator("canon");
         try { 
@@ -34,9 +34,9 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
     @Override
     public void Update(long deltaTime) {
         if (jaColidiu()){
-            //Game.getInstance().setGameOver();
+            Game.getInstance().setGameOver();
         }
-
+        //System.out.println(getDirH());
         if(getX() >= 0 && getDirH() == (-1)){
             setPosX(getX() + getDirH() * getSpeed());
         }
@@ -49,24 +49,28 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void OnInput(KeyCode keyCode, boolean isPressed) {
+        
         if (keyCode == KeyCode.LEFT){
             int dh = isPressed ? -1 : 0; 
-            setDirH(dh);
+            setDirH(dh); 
         }
         if (keyCode == KeyCode.RIGHT){
             int dh = isPressed ? 1 : 0;
             setDirH(dh);
         }
-       
+        
         if (keyCode == KeyCode.SPACE){
             if (shot_timer <= 0) {
-                Game.getInstance().addChar(new Shot(getX()+(largura/2)-2,getY()-16));
+                int posx = getX()+(largura/2)-2;
+                int posy = getY()-16;
+                Game.getInstance().addChar(new Shot(posx,posy,this));
                 shot_timer = RELOAD_TIME;
             }
         }
         //if (keyCode == KeyCode.UP) do nothing
         //if (keyCode == KeyCode.DOWN) do nothing
     }
+
 
     @Override
     public int getAltura(){
