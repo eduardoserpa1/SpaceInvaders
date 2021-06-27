@@ -1,6 +1,4 @@
 # SpaceInvaders
 Final work for object-oriented programming class.
 
-Current branch: Henrique Barcellos Lima 20204006-9
-
-blablabla
+Current branch: José Eduardo Rodrigues Serpa 20200311-7

@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
@@ -7,11 +9,20 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein, Rafael Copstein
  */
 public class Canhao extends BasicElement implements KeyboardCtrl{
-    private int RELOAD_TIME = 100000000; // Time is in nanoseconds
+    private int RELOAD_TIME = 300000000; // Time is in nanoseconds
     private int shot_timer = 0;
+
+    private Animator anime;
 
     public Canhao(int px,int py){
         super(px,py);
+        
+        anime = new Animator("canon");
+        try { 
+            anime.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -23,9 +34,16 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
     @Override
     public void Update(long deltaTime) {
         if (jaColidiu()){
-            Game.getInstance().setGameOver();
+            //Game.getInstance().setGameOver();
         }
-        setPosX(getX() + getDirH() * getSpeed());
+
+        if(getX() >= 0 && getDirH() == (-1)){
+            setPosX(getX() + getDirH() * getSpeed());
+        }
+        if(getX() <= Params.WINDOW_WIDTH - largura && getDirH() == (1)){
+            setPosX(getX() + getDirH() * getSpeed());
+        }
+        
         if (shot_timer > 0) shot_timer -= deltaTime;
     }
 
@@ -39,9 +57,10 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
             int dh = isPressed ? 1 : 0;
             setDirH(dh);
         }
+       
         if (keyCode == KeyCode.SPACE){
             if (shot_timer <= 0) {
-                Game.getInstance().addChar(new Shot(getX()+16,getY()-32));
+                Game.getInstance().addChar(new Shot(getX()+(largura/2)-2,getY()-16));
                 shot_timer = RELOAD_TIME;
             }
         }
@@ -61,8 +80,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void Draw(GraphicsContext graphicsContext) {
-        graphicsContext.setFill(Paint.valueOf("#FF0000"));
-        graphicsContext.fillRect(getX(), getY()+16, 32, 32);
-        graphicsContext.fillRect(getX()+8, getY()-16, 16, 48);
+        graphicsContext.drawImage(anime.updateSprite(5),(double)getX(), (double)getY()+16, (double)largura, (double)altura);
+        
     }
 }

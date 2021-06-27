@@ -3,13 +3,13 @@ import javafx.scene.image.Image;
 
 public class Pinguim extends BasicElement {
     private Image image;
-
+ 
     public Pinguim(int px,int py){
         super(px,py);
         try{
             // Carrega a imagem ajustando a altura para 40 pixels
             // mantendo a proporção em ambas dimensões
-            image =  new Image( "pinguim.png",0,40,true,true );
+            image =  new Image("./sprites/pinguim.png",0,40,true,true);                                                                       
         }catch(Exception e){
             System.out.println(e.getMessage());
             System.exit(1);

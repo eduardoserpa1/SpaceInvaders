@@ -1,3 +1,4 @@
+
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -8,11 +9,11 @@ public abstract class BasicElement implements Character{
     int direction_horizontal = 0, direction_vertical = 0;
     int lminV = 0, lmaxV = Params.WINDOW_HEIGHT;
     int lminH = 0, lmaxH = Params.WINDOW_WIDTH;
-    int largura = 32, altura = 32;
+    int largura = 64, altura = 64;
     boolean colidiu = false;
     boolean active = true;
     int posX, posY;
-    int speed = 2;
+    int speed = 3;
 
     public BasicElement(int startX,int startY){
         posX = startX;
@@ -57,8 +58,18 @@ public abstract class BasicElement implements Character{
 
         // Verifica colisão
         if (p1x < op2x && p2x > op1x && p1y < op2y && p2y > op1y){
-            colidiu = true;
+            if(validaColisao(this, outro)){
+                colidiu = true;
+            }
         }
+    }
+
+    private boolean validaColisao(Object e, Object e2){
+        if(e instanceof Ball && e2 instanceof Ball){
+            return false;
+        }
+
+        return true;
     }
 
     public int getDirH(){

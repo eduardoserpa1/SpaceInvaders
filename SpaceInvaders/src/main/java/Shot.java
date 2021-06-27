@@ -13,7 +13,7 @@ public class Shot extends BasicElement{
     @Override
     public void start(){
         setDirV(-1);
-        setSpeed(3);
+        setSpeed(5);
     }
 
     @Override
@@ -47,11 +47,11 @@ public class Shot extends BasicElement{
 
     @Override
     public int getLargura(){
-        return 8;
+        return 4;
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.setFill(Paint.valueOf("#00FF00"));
-        graphicsContext.fillOval(getX(), getY(), 8, 16);
+        graphicsContext.setFill(Paint.valueOf("#FF0000"));
+        graphicsContext.fillRect(getX(), getY(), 4, 16);
     }
 }
