@@ -7,6 +7,8 @@ import javafx.scene.paint.Paint;
  */
 public class Tanker extends BasicElement{
     private Canhao alvo;
+    private int RELOAD_TIME = 60; // Time is in nanoseconds
+    private int shot_timer = 0;
 
     public Tanker(int px,int py,Canhao canhao){
         super(px,py);
@@ -31,17 +33,31 @@ public class Tanker extends BasicElement{
             deactivate();
         }else{
             setPosX(getX() + getDirH() * getSpeed());
-         
+            
+            int px1 = getX();
+            int px2 = px1 + getLargura();
+            int canhao_px1 = alvo.getX();
+            int canhao_px2 = canhao_px1 + alvo.getLargura();
+            if(  (px1 >= canhao_px1 && px1 <= canhao_px2)  ||  (px2 >= canhao_px1 && px2 <= canhao_px2)){
+                if(shot_timer==0){
+                    Game.getInstance().addChar(new Shot(getX() + (getLargura()/2),getY()+getAltura()+5,this));
+                    shot_timer = RELOAD_TIME;
+                }
+            }
+
             if (getX() >= getLMaxH() || getX() <= getLMinH()){
               
                 setDirH(getDirH() * (-1));
                
             }
+
+            if (shot_timer > 0) shot_timer -= 1;
+
         }
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.setFill(Paint.valueOf("#FFFF00")); 
+        graphicsContext.setFill(Paint.valueOf("#FF00FF")); 
         graphicsContext.fillOval(getX(), getY(), getLargura(), getAltura());
     }
 }

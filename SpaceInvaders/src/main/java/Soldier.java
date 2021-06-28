@@ -9,8 +9,8 @@ public class Soldier extends BasicElement{
     public Soldier(int px,int py){
         super(px,py);
         setEnemy(true);
-        altura=32;
-        largura=32;
+        altura=48;
+        largura=48;
         setDirH(1);
     }
 

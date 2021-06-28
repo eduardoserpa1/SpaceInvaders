@@ -68,7 +68,9 @@ public class Game {
         for(int i=0; i<30; i++){
             //activeChars.add(new Enemy2(50+(i*50),100));
         }
-       
+        activeChars.add(new Tanker(Params.LEFT_BORDER+200,10,canhao));
+        activeChars.add(new Tanker(Params.LEFT_BORDER+100,10,canhao));
+        activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
 
         for(Character c:activeChars){
             c.start();
@@ -97,22 +99,22 @@ public class Game {
         }
     }
     public void setWave(int sec){
-        if(sec%3==0){
+        if(sec%10==0){
             activeChars.add(new Scout(Params.LEFT_BORDER,100,1));
             activeChars.add(new Scout(Params.RIGHT_BORDER-24,100,-1));  
             
             activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
         }
-        if(sec%5==0)
-            activeChars.add(new Soldier(Params.LEFT_BORDER,10));
-
-        if(sec%2==0){
+        if(sec%15==0){
+            activeChars.add(new Soldier(Params.LEFT_BORDER+100,300));
+            activeChars.add(new Soldier(Params.LEFT_BORDER+50,300));
+            activeChars.add(new Soldier(Params.LEFT_BORDER,300));
+        }
+        if(sec%20==0){
             activeChars.add(new Bomber(Params.RIGHT_BORDER,500,-1,canhao));
             activeChars.add(new Bomber(Params.LEFT_BORDER,500,1,canhao));
         }
         
-        
-            
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {

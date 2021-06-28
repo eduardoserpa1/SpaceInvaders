@@ -9,7 +9,7 @@ public abstract class BasicElement implements Character{
     int direction_horizontal = 0, direction_vertical = 0;
     int lminV = 0, lmaxV = Params.WINDOW_HEIGHT;
     int lminH = 0, lmaxH = Params.WINDOW_WIDTH;
-    int largura = 64, altura = 64;
+    int largura = 32, altura = 32;
     boolean colidiu = false;
     boolean active = true;
     int posX, posY;
@@ -81,6 +81,12 @@ public abstract class BasicElement implements Character{
         if(e.isEnemy() && e2.isEnemy()){
             return false;
         }
+        //if(!(e instanceof Canhao) && e2 instanceof Shot){
+        //    return false;
+        //}
+        
+        
+        
 
         return true;
     }

@@ -16,7 +16,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     public Canhao(int px,int py,int speed){
         super(px,py,speed);
-        
+        setLargAlt(64, 64);
         anime = new Animator("canon");
         try { 
             anime.load();
