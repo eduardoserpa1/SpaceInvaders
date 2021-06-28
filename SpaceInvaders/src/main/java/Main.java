@@ -37,6 +37,8 @@ public class Main extends Application {
         Game.getInstance().Start();
 
         // Register User Input Handler
+    
+        
         scene.setOnKeyPressed((KeyEvent event) -> {
             Game.getInstance().OnInput(event.getCode(), true);
         });
@@ -44,6 +46,7 @@ public class Main extends Application {
         scene.setOnKeyReleased((KeyEvent event) -> {
             Game.getInstance().OnInput(event.getCode(), false);
         });
+        
 
         // Register Game Loop
         final GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -81,10 +84,7 @@ public class Main extends Application {
         // Show window
         stage.show();
     }
-    
-    public static void runBackgroundAnimation(Image img,GraphicsContext gc){
-        gc.drawImage(img,0,0,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
-    }
+
 
     public static void main(String args[]) {
         launch();

@@ -1,12 +1,14 @@
 BasicElement.class
 KeyboardCtrl.class
-Ball.class
 Character.class
 Animator.class
+Soldier.class
 Main$1.class
 Params.class
 Main.class
+Scout.class
 Shot.class
+Bomber.class
 Game.class
 Canhao.class
-Pinguim.class
+Tanker.class

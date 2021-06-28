@@ -5,11 +5,13 @@ import javafx.scene.paint.Paint;
  * Represents a simple ball that crosses the screen over and over again
  * @author Bernardo Copstein and Rafael Copstein
  */
-public class Ball extends BasicElement{
-    public Ball(int px,int py){
+public class Soldier extends BasicElement{
+    public Soldier(int px,int py){
         super(px,py);
-        altura=32;
-        largura=32;
+        setEnemy(true);
+        altura=48;
+        largura=48;
+        setDirH(1);
     }
 
     @Override
@@ -26,11 +28,16 @@ public class Ball extends BasicElement{
         }else{
             setPosX(getX() + getDirH() * getSpeed());
             // Se chegou no lado direito da tela ...
-            if (getX() >= getLMaxH()){
+            if (getX() >= getLMaxH() - getLargura() || getX() <= getLMinH()){
                 // Reposiciona no lado esquerdo e ...
-                setPosX(getLMinH());
-                // Sorteia o passo de avanço [1,5]
-                setSpeed(Params.getInstance().nextInt(5)+1);
+                
+                setPosY(getY()+30);
+                setDirH(getDirH() * (-1));
+                setPosX(getX() + getDirH());
+
+                //setPosX(getLMinH());
+                // Sorteia o passo de avanço [1,4]
+                //setSpeed(Params.getInstance().nextInt(4)+1);
             }
         }
     }
