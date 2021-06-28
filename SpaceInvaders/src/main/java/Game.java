@@ -98,6 +98,7 @@ public class Game {
     }
 
     public void Draw(GraphicsContext graphicsContext) {
+        if(Main.isPaused) return;
         for(Character c:activeChars){
             c.Draw(graphicsContext);
         }
