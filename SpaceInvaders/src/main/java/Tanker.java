@@ -5,11 +5,17 @@ import javafx.scene.paint.Paint;
  * Represents a simple ball that crosses the screen over and over again
  * @author Bernardo Copstein and Rafael Copstein
  */
-public class Enemy4 extends BasicElement{
-    public Enemy4(int px,int py){
+public class Tanker extends BasicElement{
+    private Canhao alvo;
+
+    public Tanker(int px,int py,Canhao canhao){
         super(px,py);
-        altura=32;
-        largura=32;
+        alvo = canhao;
+        setEnemy(true);
+        altura=64;
+        largura=64;
+        setSpeed(1);
+        setDirH(1);
     }
 
     @Override
@@ -25,12 +31,11 @@ public class Enemy4 extends BasicElement{
             deactivate();
         }else{
             setPosX(getX() + getDirH() * getSpeed());
-            // Se chegou no lado direito da tela ...
-            if (getX() >= getLMaxH()){
-                // Reposiciona no lado esquerdo e ...
-                setPosX(getLMinH());
-                // Sorteia o passo de avanço [1,5]
-                setSpeed(Params.getInstance().nextInt(5)+1);
+         
+            if (getX() >= getLMaxH() || getX() <= getLMinH()){
+              
+                setDirH(getDirH() * (-1));
+               
             }
         }
     }

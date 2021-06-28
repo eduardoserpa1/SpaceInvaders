@@ -5,11 +5,12 @@ import javafx.scene.paint.Paint;
  * Represents a simple ball that crosses the screen over and over again
  * @author Bernardo Copstein and Rafael Copstein
  */
-public class Enemy2 extends BasicElement{
+public class Scout extends BasicElement{
     private char pelotao;
 
-    public Enemy2(int px,int py,int dirH){
+    public Scout(int px,int py,int dirH){
         super(px,py);
+        setEnemy(true);
         altura=24;
         largura=24;
         if(dirH>0){
@@ -23,7 +24,11 @@ public class Enemy2 extends BasicElement{
 
     @Override
     public void start(){
-        setDirH(1);
+        if(pelotao == 'l'){
+            setDirH(1);
+        }else if(pelotao == 'r'){
+            setDirH(-1);
+        }
     }
 
 

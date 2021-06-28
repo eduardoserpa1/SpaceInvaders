@@ -14,7 +14,7 @@ public abstract class BasicElement implements Character{
     boolean active = true;
     int posX, posY;
     int speed = 2;
-    //boolean isMoving = false;
+    boolean enemy=false;
 
     public BasicElement(int startX,int startY){
         posX = startX;
@@ -26,6 +26,13 @@ public abstract class BasicElement implements Character{
         speed = startSpeed;
     }
 
+    public void setEnemy(boolean e){
+        this.enemy = e;
+    }
+    public boolean isEnemy(){
+        return(this.enemy);
+    }
+    
     @Override
     public int getX(){
         return(posX);
@@ -70,17 +77,8 @@ public abstract class BasicElement implements Character{
         }
     }
 
-    private boolean validaColisao(Object e, Object e2){
-        if(e instanceof Enemy1 && e2 instanceof Enemy1){
-            return false;
-        }
-        if(e instanceof Enemy2 && e2 instanceof Enemy2){
-            return false;
-        }
-        if(e instanceof Enemy1 && e2 instanceof Enemy2){
-            return false;
-        }
-        if(e instanceof Enemy2 && e2 instanceof Enemy1){
+    private boolean validaColisao(Character e, Character e2){
+        if(e.isEnemy() && e2.isEnemy()){
             return false;
         }
 

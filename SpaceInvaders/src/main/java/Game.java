@@ -62,7 +62,7 @@ public class Game {
 
         // Adiciona bolas
         for(int i=0; i<20; i++){
-            activeChars.add(new Enemy1(50+(i*50),10));
+            //activeChars.add(new Soldier(50+(i*50),10));
             
         }
         for(int i=0; i<30; i++){
@@ -82,7 +82,7 @@ public class Game {
 
         frame++;
 
-        if(frame%20==0)
+        if(frame%60==0)
             setWave(frame/60);
 
         for(int i=0;i<activeChars.size();i++){
@@ -97,9 +97,22 @@ public class Game {
         }
     }
     public void setWave(int sec){
-        //System.out.println(sec);
-        activeChars.add(new Enemy2(10,100,1));
-        activeChars.add(new Enemy2(Params.WINDOW_WIDTH-34,100,-1));
+        if(sec%3==0){
+            activeChars.add(new Scout(Params.LEFT_BORDER,100,1));
+            activeChars.add(new Scout(Params.RIGHT_BORDER-24,100,-1));  
+            
+            activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
+        }
+        if(sec%5==0)
+            activeChars.add(new Soldier(Params.LEFT_BORDER,10));
+
+        if(sec%2==0){
+            activeChars.add(new Bomber(Params.RIGHT_BORDER,500,-1,canhao));
+            activeChars.add(new Bomber(Params.LEFT_BORDER,500,1,canhao));
+        }
+        
+        
+            
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {
