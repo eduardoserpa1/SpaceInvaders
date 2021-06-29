@@ -13,9 +13,8 @@ public class Game {
     private List<Character> activeChars;
     private boolean gameOver;
     private int pontos;
-    private int frame = 0;
+    int frame=0;
 
-    
     private Game(){
         gameOver = false;
         pontos = 0;
@@ -123,7 +122,6 @@ public class Game {
     }
 
     public void Draw(GraphicsContext graphicsContext) {
-        if(Main.isPaused) return;
         for(Character c:activeChars){
             c.Draw(graphicsContext);
         }
