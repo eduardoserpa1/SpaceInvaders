@@ -1,6 +1,13 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
 /**
@@ -11,11 +18,13 @@ public class Game {
     private static Game game = null;
     private Canhao canhao;
     private List<Character> activeChars;
+    private Stack<String> preview_wave;
     private boolean gameOver;
     private int pontos;
     private int frame = 0;
-
     
+
+
     private Game(){
         gameOver = false;
         pontos = 0;
@@ -56,26 +65,17 @@ public class Game {
     public void Start() {
         // Repositório de personagens
         activeChars = new LinkedList<>();
-
+        preview_wave = new Stack<>();
         // Adiciona o canhao
         canhao = new Canhao(350,510,4);
         activeChars.add(canhao);
 
-        // Adiciona bolas
-        for(int i=0; i<20; i++){
-            //activeChars.add(new Soldier(50+(i*50),10));
-            
-        }
-        for(int i=0; i<30; i++){
-            //activeChars.add(new Enemy2(50+(i*50),100));
-        }
-        activeChars.add(new Tanker(Params.LEFT_BORDER+200,10,canhao));
-        activeChars.add(new Tanker(Params.LEFT_BORDER+100,10,canhao));
-        activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
 
         for(Character c:activeChars){
             c.start();
         }
+
+        loadWaves();
     }
 
     public void Update(long currentTime, long deltaTime) {
@@ -100,22 +100,57 @@ public class Game {
         }
     }
     public void setWave(int sec){
-        if(sec%10==0){
-            activeChars.add(new Scout(Params.LEFT_BORDER,100,1));
-            activeChars.add(new Scout(Params.RIGHT_BORDER-24,100,-1));  
-            
-            activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
+        if(sec%30==0){
+            generateWave(sec/30);
+            for(Character c:activeChars){
+                c.start();
+            }
         }
-        if(sec%15==0){
-            activeChars.add(new Soldier(Params.LEFT_BORDER+100,300));
-            activeChars.add(new Soldier(Params.LEFT_BORDER+50,300));
-            activeChars.add(new Soldier(Params.LEFT_BORDER,300));
+    }
+    public void generateWave(int wave_count){
+        int qtd_bomber,qtd_scout,qtd_soldier,qtd_tanker;
+        String[] str = preview_wave.pop().split("-");
+        qtd_bomber = Integer.parseInt(str[0]);
+        qtd_scout = Integer.parseInt(str[1]);
+        qtd_soldier = Integer.parseInt(str[2]);
+        qtd_tanker =  Integer.parseInt(str[3]);
+
+        for (int i = 0; i < qtd_bomber; i++) {
+            activeChars.add(new Bomber(0, 0, 0, canhao));
         }
-        if(sec%20==0){
-            activeChars.add(new Bomber(Params.RIGHT_BORDER,500,-1,canhao));
-            activeChars.add(new Bomber(Params.LEFT_BORDER,500,1,canhao));
+        for (int i = 0; i < qtd_scout; i++) {
+            activeChars.add(new Scout(0, 0, 0));
         }
+        for (int i = 0; i < qtd_soldier; i++) {
+            activeChars.add(new Soldier(0, 0));
+        }
+        for (int i = 0; i < qtd_tanker; i++) {
+            activeChars.add(new Tanker(0, 0, canhao));
+        }
+    }
+
+    public void loadWaves() {
+        Integer cont = 10;
+
+        Path path2 = getPath("waves");
         
+
+        try (Scanner sc = new Scanner(Files.newBufferedReader(path2, 
+                                            Charset.defaultCharset()))){
+            while(sc.hasNextLine()) {
+                String line = sc.nextLine();
+                preview_wave.add(line);
+                System.out.println(line);
+            }
+        }catch (IOException x){
+               System.err.format("Erro de E/S: %s%n", x);
+        }
+    }
+    public Path getPath(String file){
+        String currDir = Paths.get("").toAbsolutePath().toString();
+        String nameComplete = currDir+"\\src\\main\\files\\"+ file +".dat";
+        Path path = Paths.get(nameComplete);
+        return path;
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {

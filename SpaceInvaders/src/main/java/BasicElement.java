@@ -81,6 +81,7 @@ public abstract class BasicElement implements Character{
         if(e.isEnemy() && e2.isEnemy()){
             return false;
         }
+        
         //if(!(e instanceof Canhao) && e2 instanceof Shot){
         //    return false;
         //}

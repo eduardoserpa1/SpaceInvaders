@@ -6,7 +6,7 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein and Rafael Copstein
  */
 public class Shot extends BasicElement{
-    Object shooter;
+    public Object shooter;
 
     public Shot(int px,int py, Object shooter){
         super(px,py);

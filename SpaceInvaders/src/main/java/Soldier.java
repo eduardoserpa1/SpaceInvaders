@@ -6,6 +6,8 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein and Rafael Copstein
  */
 public class Soldier extends BasicElement{
+    private int life = 3;
+
     public Soldier(int px,int py){
         super(px,py);
         setEnemy(true);
@@ -23,8 +25,14 @@ public class Soldier extends BasicElement{
     @Override
     public void Update(long deltaTime){
         if (jaColidiu()){
-            Game.getInstance().incPontos();
-            deactivate();
+            if(life<=1){
+                Game.getInstance().incPontos();
+                deactivate();
+            }else{
+                life--;
+                colidiu=false;
+                return;
+            }
         }else{
             setPosX(getX() + getDirH() * getSpeed());
             // Se chegou no lado direito da tela ...

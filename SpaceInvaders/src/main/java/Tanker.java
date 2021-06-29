@@ -9,6 +9,7 @@ public class Tanker extends BasicElement{
     private Canhao alvo;
     private int RELOAD_TIME = 60; // Time is in nanoseconds
     private int shot_timer = 0;
+    private int life = 5;
 
     public Tanker(int px,int py,Canhao canhao){
         super(px,py);
@@ -29,8 +30,14 @@ public class Tanker extends BasicElement{
     @Override
     public void Update(long deltaTime){
         if (jaColidiu()){
-            Game.getInstance().incPontos();
-            deactivate();
+            if(life<=1){
+                Game.getInstance().incPontos();
+                deactivate();
+            }else{
+                life--;
+                colidiu=false;
+                return;
+            }
         }else{
             setPosX(getX() + getDirH() * getSpeed());
             
