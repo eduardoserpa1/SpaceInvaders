@@ -13,7 +13,7 @@ public class Soldier extends BasicElement{
         setEnemy(true);
         altura=48;
         largura=48;
-        setDirH(1);
+        //setDirH(1);
     }
 
     @Override

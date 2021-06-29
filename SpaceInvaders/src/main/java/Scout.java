@@ -15,10 +15,10 @@ public class Scout extends BasicElement{
         largura=24;
         if(dirH>0){
             pelotao = 'l';
-            setDirH(1);
+            //setDirH(1);
         }else{
             pelotao = 'r';
-            setDirH(-1);
+            //setDirH(-1); 
         }
     }
 
@@ -38,9 +38,8 @@ public class Scout extends BasicElement{
             Game.getInstance().incPontos();
             deactivate();
         }else{
-            setPosX(getX() + getDirH() * getSpeed());
-            // Se chegou no lado direito da tela ...
-            
+            setPosX(getX() + getDirH() * getSpeed()); 
+
             if(pelotao == 'l'){
                 if(getX()+getLargura() >= getLMaxH()/2 || getX() <= getLMinH())
                     rotaciona();

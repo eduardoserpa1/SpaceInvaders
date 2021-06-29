@@ -18,7 +18,7 @@ public class Tanker extends BasicElement{
         altura=64;
         largura=64;
         setSpeed(1);
-        setDirH(1);
+        //setDirH(1);
     }
 
     @Override

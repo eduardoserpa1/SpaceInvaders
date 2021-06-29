@@ -17,12 +17,12 @@ public class Bomber extends BasicElement{
         largura=24;
         if(dirH>0){
             pelotao = 'l';
-            setDirH(1);
+            //setDirH(1);
         }else{
             pelotao = 'r';
-            setDirH(-1);
+            //setDirH(-1);
         }
-        setDirV(-1);
+        //setDirV(-1);
     }
 
     @Override
@@ -44,6 +44,15 @@ public class Bomber extends BasicElement{
         }else{
             setPosX(getX() + getDirH() * (getSpeed()+1) );
             setPosY(getY() + getDirV() * getSpeed() );
+
+            if(getSpeed()!=5){
+                if(getDirV()==0){
+                    setDirV(-1);
+                }else{
+                    setDirV(0);
+                }
+            }
+        
             int px1 = this.getX();
             int px2 = px1 + getLargura();
             int canhao_px1 = alvo.getX();
