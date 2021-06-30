@@ -92,13 +92,13 @@ public abstract class BasicElement implements Character{
         }
         if(e instanceof Shot){
             Shot s = (Shot)e;
-            if(s.shooter instanceof Tanker && e2.isEnemy()){
+            if((s.shooter instanceof Tanker || s.shooter instanceof Berserker) && e2.isEnemy()){
                 return false;
             }
         }
         if(e2 instanceof Shot){
             Shot s = (Shot)e2;
-            if(s.shooter instanceof Tanker && e.isEnemy()){
+            if((s.shooter instanceof Tanker || s.shooter instanceof Berserker) && e.isEnemy()){
                 return false;
             }
         }
