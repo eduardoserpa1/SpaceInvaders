@@ -35,7 +35,7 @@ public class Shot extends BasicElement{
     @Override
     public void testaColisao(Character outro){
         // Não verifica colisão de um tiro com outro tiro
-        if (outro instanceof Shot || ( shooter instanceof Tanker && !(outro instanceof Canhao) ) ){
+        if (outro instanceof Shot){
             return;
         }else{
             super.testaColisao(outro);

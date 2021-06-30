@@ -86,26 +86,33 @@ public abstract class BasicElement implements Character{
         }
     }
 
-    public void touchBottom(){
-        if(getY() + getAltura() >= getLMaxV()){
-            setColidiu();
-            Game.getInstance().setGameOver();
-        }
-    }
-
     private boolean validaColisao(Character e, Character e2){
         if(e.isEnemy() && e2.isEnemy()){
             return false;
         }
-        
-        //if(!(e instanceof Canhao) && e2 instanceof Shot){
-        //    return false;
-        //}
-        
+        if(e instanceof Shot){
+            Shot s = (Shot)e;
+            if(s.shooter instanceof Tanker && e2.isEnemy()){
+                return false;
+            }
+        }
+        if(e2 instanceof Shot){
+            Shot s = (Shot)e2;
+            if(s.shooter instanceof Tanker && e.isEnemy()){
+                return false;
+            }
+        }
         
         
 
         return true;
+    }
+
+    public void touchBottom(){
+        if(getY() + getAltura() >= getLMaxV() && !(this instanceof Shot)){
+            setColidiu();
+            Game.getInstance().setGameOver();
+        }
     }
 
     public int getDirH(){

@@ -24,8 +24,6 @@ public class Game {
     private int wave=1;
     private int frame = 0;
     private int spawner = 1;
-    
-
 
     private Game(){
         gameOver = false;

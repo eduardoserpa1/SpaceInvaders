@@ -11,9 +11,9 @@ public interface Character {
     int getLargura();
 
     boolean isEnemy();
+    void touchBottom();
 
     void testaColisao(Character c);
-    void touchBottom();
     boolean jaColidiu();
     void setColidiu();
 
