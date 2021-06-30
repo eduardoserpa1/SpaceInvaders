@@ -11,14 +11,14 @@ public class Scout extends BasicElement{
     public Scout(int px,int py,int dirH){
         super(px,py);
         setEnemy(true);
-        altura=24;
-        largura=24;
+        setSpeed(2);
+        setPontos(2);
         if(dirH>0){
             pelotao = 'l';
-            setDirH(1);
+            //setDirH(1);
         }else{
             pelotao = 'r';
-            setDirH(-1);
+            //setDirH(-1); 
         }
     }
 
@@ -35,12 +35,11 @@ public class Scout extends BasicElement{
     @Override
     public void Update(long deltaTime){
         if (jaColidiu()){
-            Game.getInstance().incPontos();
+            Game.getInstance().incPontos(getPontos());
             deactivate();
         }else{
-            setPosX(getX() + getDirH() * getSpeed());
-            // Se chegou no lado direito da tela ...
-            
+            setPosX(getX() + getDirH() * getSpeed()); 
+
             if(pelotao == 'l'){
                 if(getX()+getLargura() >= getLMaxH()/2 || getX() <= getLMinH())
                     rotaciona();
@@ -48,6 +47,7 @@ public class Scout extends BasicElement{
                 if(getX() <= getLMaxH()/2 || getX()+getLargura() == getLMaxH() )
                     rotaciona();
             }
+            
             
         }
     }

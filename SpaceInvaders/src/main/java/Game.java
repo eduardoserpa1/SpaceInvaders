@@ -1,6 +1,13 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
 /**
@@ -11,9 +18,12 @@ public class Game {
     private static Game game = null;
     private Canhao canhao;
     private List<Character> activeChars;
+    private Stack<String> preview_wave;
     private boolean gameOver;
     private int pontos;
-    int frame=0;
+    private int wave=1;
+    private int frame = 0;
+    private int spawner = 1;
 
     private Game(){
         gameOver = false;
@@ -32,8 +42,8 @@ public class Game {
         return pontos;
     }
 
-    public void incPontos(){
-        pontos++;
+    public void incPontos(int pts){
+        pontos += pts;
     }
 
     public static Game getInstance(){
@@ -55,26 +65,16 @@ public class Game {
     public void Start() {
         // Repositório de personagens
         activeChars = new LinkedList<>();
-
+        preview_wave = new Stack<>();
         // Adiciona o canhao
         canhao = new Canhao(350,510,4);
         activeChars.add(canhao);
 
-        // Adiciona bolas
-        for(int i=0; i<20; i++){
-            //activeChars.add(new Soldier(50+(i*50),10));
-            
-        }
-        for(int i=0; i<30; i++){
-            //activeChars.add(new Enemy2(50+(i*50),100));
-        }
-        activeChars.add(new Tanker(Params.LEFT_BORDER+200,10,canhao));
-        activeChars.add(new Tanker(Params.LEFT_BORDER+100,10,canhao));
-        activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
-
         for(Character c:activeChars){
             c.start();
         }
+
+        loadWaves();
     }
 
     public void Update(long currentTime, long deltaTime) {
@@ -83,9 +83,7 @@ public class Game {
         }
 
         frame++;
-
-        if(frame%60==0)
-            setWave(frame/60);
+        sinc_wave();
 
         for(int i=0;i<activeChars.size();i++){
             Character este = activeChars.get(i);
@@ -93,28 +91,117 @@ public class Game {
             for(int j =0; j<activeChars.size();j++){
                 Character outro = activeChars.get(j);
                 if (este != outro){
+                    este.touchBottom();
                     este.testaColisao(outro);
                 }
             }
         }
     }
-    public void setWave(int sec){
-        if(sec%10==0){
-            activeChars.add(new Scout(Params.LEFT_BORDER,100,1));
-            activeChars.add(new Scout(Params.RIGHT_BORDER-24,100,-1));  
-            
-            activeChars.add(new Tanker(Params.LEFT_BORDER,10,canhao));
+    public void sinc_wave(){
+
+        boolean second025 = frame%15==0;
+        boolean second05 = frame%30==0;
+        boolean second1 = frame%60==0;
+        boolean second2 = frame%120==0;
+
+        Object enemy = activeChars.get(spawner-1);
+
+        if(activeChars.size()==1){
+            System.out.println("Wave " + wave + " liberada!");
+            generateWave(); 
+            wave++;
+        }else{
+            if(spawner>1){
+                if(enemy instanceof Tanker){
+                    if(second2){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else
+                if(enemy instanceof Soldier){
+                    if(second05){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else
+                if(enemy instanceof Scout){
+                    if(second025){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else 
+                if(enemy instanceof Berserker){
+                    if(second025){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else{
+                    if(second05){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }
+                
+            }
         }
-        if(sec%15==0){
-            activeChars.add(new Soldier(Params.LEFT_BORDER+100,300));
-            activeChars.add(new Soldier(Params.LEFT_BORDER+50,300));
-            activeChars.add(new Soldier(Params.LEFT_BORDER,300));
-        }
-        if(sec%20==0){
-            activeChars.add(new Bomber(Params.RIGHT_BORDER,500,-1,canhao));
-            activeChars.add(new Bomber(Params.LEFT_BORDER,500,1,canhao));
-        }
+    }
+
+    public void generateWave(){
+
+        int qtd_berserker,qtd_scout,qtd_soldier,qtd_tanker;
+
+        String[] str = preview_wave.pop().split("-");
+
+        qtd_berserker = Integer.parseInt(str[0]);
+        qtd_scout = Integer.parseInt(str[1]);
+        qtd_soldier = Integer.parseInt(str[2]);
+        qtd_tanker =  Integer.parseInt(str[3]);
+
+        System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
         
+        
+        for (int i = 0; i < qtd_scout; i++) {
+            activeChars.add(new Scout(Params.LEFT_BORDER, Params.EDGE_Y_TOP, 1));
+            activeChars.add(new Scout(Params.RIGHT_BORDER - 24, Params.EDGE_Y_TOP, -1));
+            spawner += 2;
+        }
+        for (int i = 0; i < qtd_berserker; i++) {
+            activeChars.add(new Berserker(Params.LEFT_BORDER, Params.EDGE_Y_TOP, canhao));
+            spawner++;
+        }
+        for (int i = 0; i < qtd_tanker; i++) {
+            activeChars.add(new Tanker(Params.LEFT_BORDER, 10, canhao));
+            spawner++;
+        }
+        for (int i = 0; i < qtd_soldier; i++) {
+            activeChars.add(new Soldier(Params.LEFT_BORDER, Params.EDGE_Y_TOP));
+            spawner++;
+        }   
+    
+    }
+
+    public void loadWaves() {
+
+        Path path2 = getPath("waves");
+
+        try (Scanner sc = new Scanner(Files.newBufferedReader(path2, 
+                                            Charset.defaultCharset()))){
+            while(sc.hasNextLine()) {
+                String line = sc.nextLine();
+                preview_wave.push(line);
+                System.out.println(line);
+            }
+        }catch (IOException x){
+               System.err.format("Erro de E/S: %s%n", x);
+        }
+    
+    }
+
+    public Path getPath(String file){
+        String currDir = Paths.get("").toAbsolutePath().toString();
+        String nameComplete = currDir+"\\src\\main\\files\\"+ file +".dat";
+        Path path = Paths.get(nameComplete);
+        return path;
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {
@@ -122,6 +209,7 @@ public class Game {
     }
 
     public void Draw(GraphicsContext graphicsContext) {
+        if(Main.isPaused) return;
         for(Character c:activeChars){
             c.Draw(graphicsContext);
         }

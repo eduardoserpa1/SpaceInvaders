@@ -6,6 +6,10 @@ public class Params {
     public static final int WINDOW_HEIGHT = 600;
     public static final int LEFT_BORDER = 10;
     public static final int RIGHT_BORDER = WINDOW_WIDTH - LEFT_BORDER;
+    public static final int EDGE_Y_TOP = -64;
+    public static final int EDGE_Y_DOWN = WINDOW_HEIGHT + 64;
+    public static final int EDGE_X_RIGHT = WINDOW_WIDTH + 180;
+    public static final int EDGE_X_LEFT = -180;
 
     private static Params params = null;
     private Random rnd;

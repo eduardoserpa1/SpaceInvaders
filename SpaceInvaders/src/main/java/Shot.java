@@ -6,7 +6,7 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein and Rafael Copstein
  */
 public class Shot extends BasicElement{
-    Object shooter;
+    public Object shooter;
 
     public Shot(int px,int py, Object shooter){
         super(px,py);
@@ -18,10 +18,16 @@ public class Shot extends BasicElement{
     public void start(){
         if(shooter instanceof Canhao){
             setDirV(-1);
-        }else if(shooter instanceof Tanker){
+        }else
+        if(shooter instanceof Berserker){
+            setDirV(1);
+            setLargAlt(2, 10);
+        }else 
+        if(shooter instanceof Tanker){
             setDirV(1);
             setLargAlt(6, 32);
         }
+        
         
         setSpeed(5);
     }
@@ -29,7 +35,7 @@ public class Shot extends BasicElement{
     @Override
     public void testaColisao(Character outro){
         // Não verifica colisão de um tiro com outro tiro
-        if (outro instanceof Shot || ( shooter instanceof Tanker && !(outro instanceof Canhao) ) ){
+        if (outro instanceof Shot){
             return;
         }else{
             super.testaColisao(outro);

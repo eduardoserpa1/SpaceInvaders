@@ -13,8 +13,9 @@ public abstract class BasicElement implements Character{
     boolean colidiu = false;
     boolean active = true;
     int posX, posY;
-    int speed = 2;
+    int speed = 1;
     boolean enemy=false;
+    int pontos = 1; 
 
     public BasicElement(int startX,int startY){
         posX = startX;
@@ -24,6 +25,14 @@ public abstract class BasicElement implements Character{
         posX = startX;
         posY = startY;
         speed = startSpeed;
+    }
+
+    public void setPontos(int pontos){
+        this.pontos = pontos;
+    }
+
+    public int getPontos(){
+        return pontos;
     }
 
     public void setEnemy(boolean e){
@@ -81,14 +90,29 @@ public abstract class BasicElement implements Character{
         if(e.isEnemy() && e2.isEnemy()){
             return false;
         }
-        //if(!(e instanceof Canhao) && e2 instanceof Shot){
-        //    return false;
-        //}
-        
+        if(e instanceof Shot){
+            Shot s = (Shot)e;
+            if((s.shooter instanceof Tanker || s.shooter instanceof Berserker) && e2.isEnemy()){
+                return false;
+            }
+        }
+        if(e2 instanceof Shot){
+            Shot s = (Shot)e2;
+            if((s.shooter instanceof Tanker || s.shooter instanceof Berserker) && e.isEnemy()){
+                return false;
+            }
+        }
         
         
 
         return true;
+    }
+
+    public void touchBottom(){
+        if(getY() + getAltura() >= getLMaxV() && !(this instanceof Shot)){
+            setColidiu();
+            Game.getInstance().setGameOver();
+        }
     }
 
     public int getDirH(){
