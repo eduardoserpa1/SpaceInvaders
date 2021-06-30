@@ -21,6 +21,7 @@ public class Game {
     private Stack<String> preview_wave;
     private boolean gameOver;
     private int pontos;
+    private int wave=1;
     private int frame = 0;
     private int spawner = 1;
     
@@ -43,8 +44,8 @@ public class Game {
         return pontos;
     }
 
-    public void incPontos(){
-        pontos++;
+    public void incPontos(int pts){
+        pontos += pts;
     }
 
     public static Game getInstance(){
@@ -71,7 +72,6 @@ public class Game {
         canhao = new Canhao(350,510,4);
         activeChars.add(canhao);
 
-
         for(Character c:activeChars){
             c.start();
         }
@@ -85,9 +85,7 @@ public class Game {
         }
 
         frame++;
-
-        if(frame%60==0)
-            setWave(frame/60);
+        sinc_wave();
 
         for(int i=0;i<activeChars.size();i++){
             Character este = activeChars.get(i);
@@ -95,55 +93,92 @@ public class Game {
             for(int j =0; j<activeChars.size();j++){
                 Character outro = activeChars.get(j);
                 if (este != outro){
+                    este.touchBottom();
                     este.testaColisao(outro);
                 }
             }
         }
     }
-    public void setWave(int sec){
-        System.out.println(spawner);
-        if(sec%30==0 || sec==1){
-            System.out.println("Wave " + ((sec/30)+1) + " liberada!");
-            generateWave(sec/30); 
-        }
-        if(spawner>1){
-            
-            activeChars.get(spawner-1).start();
-            spawner--;
+    public void sinc_wave(){
+
+        boolean second025 = frame%15==0;
+        boolean second05 = frame%30==0;
+        boolean second1 = frame%60==0;
+        boolean second2 = frame%120==0;
+
+        Object enemy = activeChars.get(spawner-1);
+
+        if(activeChars.size()==1){
+            System.out.println("Wave " + wave + " liberada!");
+            generateWave(); 
+            wave++;
+        }else{
+            if(spawner>1){
+                if(enemy instanceof Tanker){
+                    if(second2){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else
+                if(enemy instanceof Soldier){
+                    if(second05){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else
+                if(enemy instanceof Scout){
+                    if(second025){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else 
+                if(enemy instanceof Berserker){
+                    if(second025){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }else{
+                    if(second05){
+                        activeChars.get(spawner-1).start();
+                        spawner--;
+                    }
+                }
+                
+            }
         }
     }
 
-    public void generateWave(int wave_count){
+    public void generateWave(){
 
-        int qtd_bomber,qtd_scout,qtd_soldier,qtd_tanker;
+        int qtd_berserker,qtd_scout,qtd_soldier,qtd_tanker;
 
         String[] str = preview_wave.pop().split("-");
 
-        qtd_bomber = Integer.parseInt(str[0]);
+        qtd_berserker = Integer.parseInt(str[0]);
         qtd_scout = Integer.parseInt(str[1]);
         qtd_soldier = Integer.parseInt(str[2]);
         qtd_tanker =  Integer.parseInt(str[3]);
 
-        System.out.println(qtd_bomber+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
- 
-        for (int i = 0; i < qtd_soldier; i++) {
-            activeChars.add(new Soldier(Params.LEFT_BORDER, Params.EDGE_Y_TOP));
+        System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
+        
+        
+        for (int i = 0; i < qtd_scout; i++) {
+            activeChars.add(new Scout(Params.LEFT_BORDER, Params.EDGE_Y_TOP, 1));
+            activeChars.add(new Scout(Params.RIGHT_BORDER - 24, Params.EDGE_Y_TOP, -1));
+            spawner += 2;
+        }
+        for (int i = 0; i < qtd_berserker; i++) {
+            activeChars.add(new Berserker(Params.LEFT_BORDER, Params.EDGE_Y_TOP, canhao));
             spawner++;
         }
         for (int i = 0; i < qtd_tanker; i++) {
             activeChars.add(new Tanker(Params.LEFT_BORDER, 10, canhao));
             spawner++;
         }
-        for (int i = 0; i < qtd_scout; i++) {
-            activeChars.add(new Scout(Params.LEFT_BORDER, Params.EDGE_Y_TOP, 1));
-            activeChars.add(new Scout(Params.RIGHT_BORDER - 24, Params.EDGE_Y_TOP, -1));
-            spawner += 2;
-        }
-        for (int i = 0; i < qtd_bomber; i++) {
-            activeChars.add(new Bomber(Params.EDGE_X_LEFT, Params.WINDOW_HEIGHT - 50, 1, canhao));
-            activeChars.add(new Bomber(Params.EDGE_X_RIGHT, Params.WINDOW_HEIGHT - 50, -1, canhao));
-            spawner += 2;
-        }
+        for (int i = 0; i < qtd_soldier; i++) {
+            activeChars.add(new Soldier(Params.LEFT_BORDER, Params.EDGE_Y_TOP));
+            spawner++;
+        }   
     
     }
 

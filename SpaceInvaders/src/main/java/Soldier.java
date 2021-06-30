@@ -6,14 +6,15 @@ import javafx.scene.paint.Paint;
  * @author Bernardo Copstein and Rafael Copstein
  */
 public class Soldier extends BasicElement{
-    private int life = 3;
+    private int life = 4;
 
     public Soldier(int px,int py){
         super(px,py);
         setEnemy(true);
-        altura=48;
-        largura=48;
-        //setDirH(1);
+        altura=50;
+        largura=50;
+        setSpeed(2);
+        setPontos(6);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class Soldier extends BasicElement{
     public void Update(long deltaTime){
         if (jaColidiu()){
             if(life<=1){
-                Game.getInstance().incPontos();
+                Game.getInstance().incPontos(this.pontos);
                 deactivate();
             }else{
                 life--;
@@ -39,9 +40,9 @@ public class Soldier extends BasicElement{
             if (getX() >= getLMaxH() - getLargura() || getX() <= getLMinH()){
                 // Reposiciona no lado esquerdo e ...
                 
-                setPosY(getY()+30);
+                setPosY(getY()+64);
                 setDirH(getDirH() * (-1));
-                setPosX(getX() + getDirH());
+                setPosX(getX() + getDirH() * 10);
 
                 //setPosX(getLMinH());
                 // Sorteia o passo de avanço [1,4]

@@ -13,6 +13,7 @@ public interface Character {
     boolean isEnemy();
 
     void testaColisao(Character c);
+    void touchBottom();
     boolean jaColidiu();
     void setColidiu();
 

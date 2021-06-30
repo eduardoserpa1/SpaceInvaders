@@ -118,6 +118,7 @@ public class Main extends Application {
 
                 if (Game.getInstance().isGameOver()){
                     stop();
+
                 }
 
                 if(screenroll >= Params.WINDOW_HEIGHT)

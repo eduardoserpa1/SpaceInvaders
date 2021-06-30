@@ -13,8 +13,9 @@ public abstract class BasicElement implements Character{
     boolean colidiu = false;
     boolean active = true;
     int posX, posY;
-    int speed = 2;
+    int speed = 1;
     boolean enemy=false;
+    int pontos = 1; 
 
     public BasicElement(int startX,int startY){
         posX = startX;
@@ -24,6 +25,14 @@ public abstract class BasicElement implements Character{
         posX = startX;
         posY = startY;
         speed = startSpeed;
+    }
+
+    public void setPontos(int pontos){
+        this.pontos = pontos;
+    }
+
+    public int getPontos(){
+        return pontos;
     }
 
     public void setEnemy(boolean e){
@@ -74,6 +83,13 @@ public abstract class BasicElement implements Character{
             if(validaColisao(this, outro)){
                 colidiu = true;
             }
+        }
+    }
+
+    public void touchBottom(){
+        if(getY() + getAltura() >= getLMaxV()){
+            setColidiu();
+            Game.getInstance().setGameOver();
         }
     }
 

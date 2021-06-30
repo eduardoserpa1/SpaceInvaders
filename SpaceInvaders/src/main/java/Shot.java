@@ -18,10 +18,16 @@ public class Shot extends BasicElement{
     public void start(){
         if(shooter instanceof Canhao){
             setDirV(-1);
-        }else if(shooter instanceof Tanker){
+        }else
+        if(shooter instanceof Berserker){
+            setDirV(1);
+            setLargAlt(2, 10);
+        }else 
+        if(shooter instanceof Tanker){
             setDirV(1);
             setLargAlt(6, 32);
         }
+        
         
         setSpeed(5);
     }
