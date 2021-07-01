@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -30,6 +32,8 @@ public class Main extends Application {
 
     public static boolean isPaused = true;
     public static String jogador = "";
+    public Group root;
+
     @Override
     public void start(Stage stage) throws Exception {
         // Initialize Window
@@ -38,7 +42,7 @@ public class Main extends Application {
 
         Image img = new Image("background\\bg.png",Params.WINDOW_WIDTH,Params.WINDOW_HEIGHT,true,true);
 
-        Group root = new Group();
+        root = new Group();
         Scene scene = new Scene( root );
         stage.setScene( scene );
 
@@ -47,7 +51,7 @@ public class Main extends Application {
         root.getChildren().add( canvas );
 
         // Setup Game object
-        Game.getInstance().Start();
+        Game.getInstance().Start(this);
 
         // Register User Input Handler
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -60,43 +64,7 @@ public class Main extends Application {
 
         // Register Game Loop
         final GraphicsContext gc = canvas.getGraphicsContext2D();
-        VBox nr = new VBox(10);
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(250, 0, 0, 340));
-        grid.setVgap(5);
-        grid.setHgap(5);
-        Button start = new Button("Start game");
-        Button rank = new Button("Ranking");
-        start.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-                public void handle(ActionEvent e) {
-                    grid.getChildren().clear();
-                    TextField nome = new TextField();
-                    Button play = new Button();
-                    play.setText("Jogar");
-                    GridPane.setConstraints(nome, 0, 0);
-                    GridPane.setConstraints(play, 1, 0);
-                    grid.getChildren().add(nome);
-                    grid.getChildren().add(play);
-                    play.setOnAction(new EventHandler<ActionEvent>(){
-
-                        @Override
-                        public void handle(ActionEvent arg0) {
-                            Main.jogador = nome.getText();
-                            grid.getChildren().clear();
-                            Main.isPaused = false;
-                        }
-                        
-                    });
-                 }
-             });
-        GridPane.setConstraints(start, 0, 0);
-        grid.getChildren().add(start);
-        GridPane.setConstraints(rank, 0, 1);
-        grid.getChildren().add(rank);
-        nr.getChildren().add(grid);
-        root.getChildren().add(nr);
-        
+        setupMainMenu(root, Game.getInstance());
 
         new AnimationTimer()
         {
@@ -130,6 +98,62 @@ public class Main extends Application {
 
         // Show window
         stage.show();
+    }
+
+    public void setupMainMenu(Group root, Game jogo){
+        VBox nr = new VBox(10);
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(250, 0, 0, 340));
+        grid.setVgap(5);
+        grid.setHgap(5);
+        Button start = new Button("Start game");
+        Button rank = new Button("Ranking");
+        start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent e) {
+                    grid.getChildren().clear();
+                    TextField nome = new TextField();
+                    Button play = new Button();
+                    play.setText("Jogar");
+                    GridPane.setConstraints(nome, 0, 0);
+                    GridPane.setConstraints(play, 1, 0);
+                    grid.getChildren().add(nome);
+                    grid.getChildren().add(play);
+                    play.setOnAction(new EventHandler<ActionEvent>(){
+
+                        @Override
+                        public void handle(ActionEvent arg0) {
+                            Main.jogador = nome.getText();
+                            grid.getChildren().clear();
+                            jogo.resetPonts();
+                            Main.isPaused = false;
+                        }
+                        
+                    });
+                 }
+             });
+        rank.setOnAction(new EventHandler<ActionEvent>(){
+
+            @Override
+            public void handle(ActionEvent arg0) {
+                ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "rankings.txt");
+                try {
+                    pb.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+        });
+        grid.getChildren().clear();
+        GridPane.setConstraints(start, 0, 0);
+        grid.getChildren().add(start);
+        GridPane.setConstraints(rank, 0, 1);
+        grid.getChildren().add(rank);
+        nr.getChildren().clear();
+        nr.getChildren().add(grid);
+        root.getChildren().add(nr);
+        
     }
     
     public static void runBackgroundAnimation(Image img,GraphicsContext gc){
