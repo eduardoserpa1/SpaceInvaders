@@ -71,7 +71,7 @@ public class Game {
         activeChars = new LinkedList<>();
         preview_wave = new Stack<>();
         // Adiciona o canhao
-        canhao = new Canhao(350,510,4);
+        canhao = new Canhao(Params.WINDOW_WIDTH/2-32,Params.WINDOW_HEIGHT-90,4);
         activeChars.add(canhao);
 
         for(Character c:activeChars){

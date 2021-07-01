@@ -1,3 +1,5 @@
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -5,6 +7,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,10 +19,19 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -47,21 +60,9 @@ public class Main extends Application {
 
         root.getChildren().add( canvas );
 
-        //while(true){
-
         Menu(root,scene);
 
-        // Setup Game object
-       
-
-        // Register User Input Handler
-        
-
-        // Register Game Loop
         final GraphicsContext gc = canvas.getGraphicsContext2D();
-        //menu
-        
-        //end menu
 
         new AnimationTimer()
         {
@@ -98,8 +99,6 @@ public class Main extends Application {
 
         // Show window
         stage.show();
-        
-        //}
     }
     public void registerInputs(Scene scene){
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -111,14 +110,43 @@ public class Main extends Application {
         });
     }
 
+    public void setMainMenu(GridPane g){
+
+    }
+    
+    public void setPlayMenu(GridPane g){
+        g.getChildren().clear();
+        TextField nome = new TextField();
+        Button play = new Button();
+        play.setText("Jogar");
+        GridPane.setConstraints(nome, 0, 0);
+        GridPane.setConstraints(play, 0, 1);
+        g.getChildren().add(nome);
+        g.getChildren().add(play);
+    }
+
     public void Menu(Group root,Scene scene){
+
         VBox nr = new VBox(10);
+
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(250, 0, 0, 340));
+
+
+        //grid.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        grid.setMinSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
+
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        
         grid.setVgap(5);
-        grid.setHgap(5);
-        Button start = new Button("Start game");
-        Button rank = new Button("Ranking");
+        grid.setHgap(5); 
+
+        Button start = new Button("INICIAR NOVO JOGO");
+        Button rank = new Button("RANKING");
+
+        cssButton(start);
+        cssButton(rank);
+
         start.setOnAction(new EventHandler<ActionEvent>() {
             @Override
                 public void handle(ActionEvent e) {
@@ -144,12 +172,38 @@ public class Main extends Application {
                     });
                  }
              });
-        GridPane.setConstraints(start, 0, 0);
-        grid.getChildren().add(start);
-        GridPane.setConstraints(rank, 0, 1);
-        grid.getChildren().add(rank);
+             rank.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                    public void handle(ActionEvent e) {
+                        grid.getChildren().clear();
+                    
+                        Text title = new Text("RANKING");
+                        title.setFill(Color.WHITE);
+                        title.setFont(Font.font(null, FontWeight.BOLD, 55));
+                        
+                        grid.getChildren().add(title);
+                    
+                     }
+                 });
+
+        
+        grid.addColumn(0, start, rank);
+        grid.setAlignment(Pos.CENTER);
         nr.getChildren().add(grid);
         root.getChildren().add(nr);
+    }
+
+    public void cssButton(Button b){
+        b.setStyle("-fx-max-width: infinity;");
+        b.setMinWidth(Params.WINDOW_WIDTH/2);
+        b.setMinHeight(40);
+        b.setCursor(Cursor.HAND);
+        b.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        b.setTextFill(Color.WHITE);
+        b.setFont(Font.font(null, FontWeight.BOLD, 20));
+        b.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        b.setOnMouseEntered(e -> b.setStyle(Params.HOVERED_BUTTON_STYLE));
+        b.setOnMouseExited(e -> b.setStyle(Params.IDLE_BUTTON_STYLE));
     }
     
     public static void runBackgroundAnimation(Image img,GraphicsContext gc){

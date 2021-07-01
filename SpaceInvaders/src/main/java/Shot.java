@@ -29,7 +29,7 @@ public class Shot extends BasicElement{
         }
         
         
-        setSpeed(5);
+        setSpeed(6);
     }
 
     @Override

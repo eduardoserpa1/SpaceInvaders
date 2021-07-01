@@ -48,7 +48,7 @@ public class Tanker extends BasicElement{
             
             aim_shot();
 
-            if (getX() >= getLMaxH() || getX()+getLargura() <= getLMinH()){
+            if (getX()+getLargura() >= getLMaxH() || getX() <= getLMinH()){
               
                 setDirH(getDirH() * (-1));
                
