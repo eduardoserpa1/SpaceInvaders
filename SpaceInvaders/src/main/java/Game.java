@@ -46,6 +46,10 @@ public class Game {
         pontos += pts;
     }
 
+    public static Game createNewInstance(){
+        game = new Game();
+        return game;
+    }
     public static Game getInstance(){
         if (game == null){
             game = new Game();

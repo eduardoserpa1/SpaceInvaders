@@ -11,6 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -46,10 +47,61 @@ public class Main extends Application {
 
         root.getChildren().add( canvas );
 
+        //while(true){
+
+        Menu(root,scene);
+
         // Setup Game object
-        Game.getInstance().Start();
+       
 
         // Register User Input Handler
+        
+
+        // Register Game Loop
+        final GraphicsContext gc = canvas.getGraphicsContext2D();
+        //menu
+        
+        //end menu
+
+        new AnimationTimer()
+        {
+            long lastNanoTime = System.nanoTime();
+            int screenroll=0;
+            @Override
+            public void handle(long currentNanoTime)
+            {
+                long deltaTime = currentNanoTime - lastNanoTime;
+
+                if (!Main.isPaused) Game.getInstance().Update(currentNanoTime, deltaTime);
+                
+                gc.drawImage(img,0,screenroll,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
+                gc.drawImage(img,0, (screenroll - Params.WINDOW_HEIGHT) ,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
+
+                gc.fillText("Jogador: " + Main.jogador + " Pontos: "+Game.getInstance().getPontos(), 10, 10);
+                Game.getInstance().Draw(gc);
+
+                if (Game.getInstance().isGameOver()){
+                    Game.createNewInstance().Start();
+                    registerInputs(scene);
+                    Main.isPaused = true;
+                    Menu(root,scene);
+                }
+
+                if(screenroll >= Params.WINDOW_HEIGHT)
+                    screenroll=0;
+                screenroll++;
+                
+                lastNanoTime = currentNanoTime;
+            }
+
+        }.start();
+
+        // Show window
+        stage.show();
+        
+        //}
+    }
+    public void registerInputs(Scene scene){
         scene.setOnKeyPressed((KeyEvent event) -> {
             Game.getInstance().OnInput(event.getCode(), true);
         });
@@ -57,10 +109,9 @@ public class Main extends Application {
         scene.setOnKeyReleased((KeyEvent event) -> {
             Game.getInstance().OnInput(event.getCode(), false);
         });
+    }
 
-        // Register Game Loop
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
-        //menu
+    public void Menu(Group root,Scene scene){
         VBox nr = new VBox(10);
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(250, 0, 0, 340));
@@ -83,6 +134,8 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent arg0) {
+                            Game.createNewInstance().Start();
+                            registerInputs(scene);
                             Main.jogador = nome.getText();
                             grid.getChildren().clear();
                             Main.isPaused = false;
@@ -97,41 +150,6 @@ public class Main extends Application {
         grid.getChildren().add(rank);
         nr.getChildren().add(grid);
         root.getChildren().add(nr);
-        //end menu
-
-        new AnimationTimer()
-        {
-            long lastNanoTime = System.nanoTime();
-            int screenroll=0;
-            @Override
-            public void handle(long currentNanoTime)
-            {
-                long deltaTime = currentNanoTime - lastNanoTime;
-
-                if (!Main.isPaused) Game.getInstance().Update(currentNanoTime, deltaTime);
-                
-                gc.drawImage(img,0,screenroll,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
-                gc.drawImage(img,0, (screenroll - Params.WINDOW_HEIGHT) ,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
-
-                gc.fillText("Jogador: " + Main.jogador + " Pontos: "+Game.getInstance().getPontos(), 10, 10);
-                Game.getInstance().Draw(gc);
-
-                if (Game.getInstance().isGameOver()){
-                    stop();
-
-                }
-
-                if(screenroll >= Params.WINDOW_HEIGHT)
-                    screenroll=0;
-                screenroll++;
-                
-                lastNanoTime = currentNanoTime;
-            }
-
-        }.start();
-
-        // Show window
-        stage.show();
     }
     
     public static void runBackgroundAnimation(Image img,GraphicsContext gc){

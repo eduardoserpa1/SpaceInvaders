@@ -33,6 +33,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void Update(long deltaTime) {
+        
         if (jaColidiu()){
             Game.getInstance().setGameOver();
         }
@@ -74,12 +75,12 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public int getAltura(){
-        return 80;
+        return this.altura;
     }
 
     @Override
     public int getLargura(){
-        return 32;
+        return this.largura;
     }
 
     @Override
