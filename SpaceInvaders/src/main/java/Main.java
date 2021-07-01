@@ -1,3 +1,13 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Scanner;
+
 import javax.swing.text.StyledEditorKit.BoldAction;
 
 import javafx.animation.AnimationTimer;
@@ -17,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
+import java.nio.charset.Charset;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -33,7 +44,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
 
 /**
  * Handles window initialization and primary game setup
@@ -43,12 +56,17 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static boolean isPaused = true;
-    public static String jogador = "";
+    public static LinkedHashMap<String,Integer> ranking;
+    private boolean saving_score=false;
+    private int score_to_save = 0;
+
     @Override
     public void start(Stage stage) throws Exception {
         // Initialize Window
         stage.setTitle(Params.WINDOW_TITLE);
         stage.setResizable(false);
+
+        ranking = loadRanking();
 
         Image img = new Image("background\\bg.png",Params.WINDOW_WIDTH,Params.WINDOW_HEIGHT,true,true);
 
@@ -78,13 +96,15 @@ public class Main extends Application {
                 gc.drawImage(img,0,screenroll,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
                 gc.drawImage(img,0, (screenroll - Params.WINDOW_HEIGHT) ,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
 
-                gc.fillText("Jogador: " + Main.jogador + " Pontos: "+Game.getInstance().getPontos(), 10, 10);
+                gc.fillText(" SCORE: "+Game.getInstance().getPontos(), 10, 10);
                 Game.getInstance().Draw(gc);
 
                 if (Game.getInstance().isGameOver()){
+                    score_to_save = Game.getInstance().getPontos();
                     Game.createNewInstance().Start();
                     registerInputs(scene);
                     Main.isPaused = true;
+                    saving_score = true;
                     Menu(root,scene);
                 }
 
@@ -100,39 +120,15 @@ public class Main extends Application {
         // Show window
         stage.show();
     }
-    public void registerInputs(Scene scene){
-        scene.setOnKeyPressed((KeyEvent event) -> {
-            Game.getInstance().OnInput(event.getCode(), true);
-        });
-
-        scene.setOnKeyReleased((KeyEvent event) -> {
-            Game.getInstance().OnInput(event.getCode(), false);
-        });
-    }
-
-    public void setMainMenu(GridPane g){
-
-    }
     
-    public void setPlayMenu(GridPane g){
-        g.getChildren().clear();
-        TextField nome = new TextField();
-        Button play = new Button();
-        play.setText("Jogar");
-        GridPane.setConstraints(nome, 0, 0);
-        GridPane.setConstraints(play, 0, 1);
-        g.getChildren().add(nome);
-        g.getChildren().add(play);
-    }
-
     public void Menu(Group root,Scene scene){
 
         VBox nr = new VBox(10);
 
         GridPane grid = new GridPane();
 
-
-        //grid.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
+        registerInputs(scene);
+        //grid.setBackground(new Background(new BackgroundFill(Color.PURPLE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         grid.setMinSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
 
@@ -141,6 +137,101 @@ public class Main extends Application {
         grid.setVgap(5);
         grid.setHgap(5); 
 
+
+        if(!saving_score)
+            setMainMenuLayout(grid);
+        else
+            setGameOverLayout(grid);
+        
+        grid.setAlignment(Pos.CENTER);
+        nr.getChildren().add(grid);
+        root.getChildren().add(nr);
+    }
+
+    public void setRankingMenuLayout(GridPane g){
+        g.getChildren().clear();
+        Text title = new Text("RANKING");
+        Button back = new Button("VOLTAR AO MENU");
+        title.setFill(Color.WHITE);
+        title.setFont(Font.font(null, FontWeight.BOLD, 55));
+        title.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(title, 0, 0,1,1,HPos.CENTER,VPos.CENTER);
+        g.add(title, 0, 0, 2, 1);
+        Text keyHEADER = new Text("PLAYER");
+        Text valueHEADER = new Text("SCORE");
+        cssText(keyHEADER);
+        cssText(valueHEADER);
+        cssButton(back);
+        GridPane.setConstraints(keyHEADER, 0, 1,1,1,HPos.LEFT,VPos.CENTER);
+        GridPane.setConstraints(valueHEADER, 1, 1,1,1,HPos.RIGHT,VPos.CENTER);
+        g.add(keyHEADER, 0, 1);
+        g.add(valueHEADER, 1, 1);
+        
+        int i=2;
+        for(Map.Entry<String, Integer> entrada : ranking.entrySet()){
+            Text key = new Text((i-1)+"- "+entrada.getKey().toUpperCase());
+            Text value = new Text( entrada.getValue().toString() );
+            cssText(key);
+            cssText(value);
+            GridPane.setConstraints(key, 0, i,1,1,HPos.LEFT,VPos.CENTER);
+            GridPane.setConstraints(value, 1, i,1,1,HPos.RIGHT,VPos.CENTER);
+            g.add(key,0,i);
+            g.add(value,1,i);
+            i++;
+        }
+
+        
+
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent arg0) {
+                    setMainMenuLayout(g);
+                }
+             });
+
+        g.add(back, 0, i+1,2,1);
+    }
+    
+    public void setSaveScoreMenuLayout(GridPane g){
+        g.getChildren().clear();
+        TextField nome = new TextField();
+        Button save = new Button();
+        save.setText("SALVAR");
+        cssTextField(nome);
+        cssButton(save);
+        GridPane.setConstraints(nome, 0, 0);
+        GridPane.setConstraints(save, 0, 1);
+        g.getChildren().add(nome);
+        g.getChildren().add(save);
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent arg0) {
+                    saveScore(nome.getText(),score_to_save);
+                    setRankingMenuLayout(g);
+                }
+             });
+    }
+    public void saveScore(String nome, int score){
+        
+        LinkedList keys = new LinkedList<String>();
+        LinkedList values = new LinkedList<Integer>();
+
+        for(Map.Entry<String, Integer> entrada : ranking.entrySet()){
+            keys.add(entrada.getKey());
+            values.add(entrada.getValue());
+        }
+        for(Object v:values){
+            System.out.println(v.toString());
+        }
+    }
+
+    public void setGameOverLayout(GridPane g){
+        g.getChildren().clear();
+        setSaveScoreMenuLayout(g);
+    }
+
+    public void setMainMenuLayout(GridPane g){
+        g.getChildren().clear();
         Button start = new Button("INICIAR NOVO JOGO");
         Button rank = new Button("RANKING");
 
@@ -149,48 +240,40 @@ public class Main extends Application {
 
         start.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-                public void handle(ActionEvent e) {
-                    grid.getChildren().clear();
-                    TextField nome = new TextField();
-                    Button play = new Button();
-                    play.setText("Jogar");
-                    GridPane.setConstraints(nome, 0, 0);
-                    GridPane.setConstraints(play, 1, 0);
-                    grid.getChildren().add(nome);
-                    grid.getChildren().add(play);
-                    play.setOnAction(new EventHandler<ActionEvent>(){
-
-                        @Override
-                        public void handle(ActionEvent arg0) {
-                            Game.createNewInstance().Start();
-                            registerInputs(scene);
-                            Main.jogador = nome.getText();
-                            grid.getChildren().clear();
-                            Main.isPaused = false;
-                        }
-                        
-                    });
-                 }
+                public void handle(ActionEvent arg0) {
+                    Game.createNewInstance().Start();
+                    //Main.jogador = nome.getText();
+                    g.getChildren().clear();
+                    Main.isPaused = false;
+                }
              });
-             rank.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                    public void handle(ActionEvent e) {
-                        grid.getChildren().clear();
-                    
-                        Text title = new Text("RANKING");
-                        title.setFill(Color.WHITE);
-                        title.setFont(Font.font(null, FontWeight.BOLD, 55));
-                        
-                        grid.getChildren().add(title);
-                    
-                     }
-                 });
+        rank.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent e) {
+                    setRankingMenuLayout(g);
+                }
+        });
 
         
-        grid.addColumn(0, start, rank);
-        grid.setAlignment(Pos.CENTER);
-        nr.getChildren().add(grid);
-        root.getChildren().add(nr);
+        g.addColumn(0, start, rank);
+        
+    }
+
+    public void cssText(Text t){
+        t.setFont(Font.font(null, FontWeight.BOLD, 25));
+        t.setFill(Color.WHITE);
+    }
+
+    public void cssTextField(TextField t){
+        t.setStyle("-fx-max-width: infinity;");
+        t.setMinWidth(Params.WINDOW_WIDTH/2);
+        t.setMinHeight(40);
+        t.setCursor(Cursor.TEXT);
+        t.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        t.setAlignment(Pos.CENTER);
+        t.setFont(Font.font(null, FontWeight.BOLD, 20));
+        t.setStyle("-fx-text-fill: white;");
+        t.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     }
 
     public void cssButton(Button b){
@@ -204,6 +287,44 @@ public class Main extends Application {
         b.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         b.setOnMouseEntered(e -> b.setStyle(Params.HOVERED_BUTTON_STYLE));
         b.setOnMouseExited(e -> b.setStyle(Params.IDLE_BUTTON_STYLE));
+    }
+
+    public void registerInputs(Scene scene){
+        scene.setOnKeyPressed((KeyEvent event) -> {
+            Game.getInstance().OnInput(event.getCode(), true);
+        });
+
+        scene.setOnKeyReleased((KeyEvent event) -> {
+            Game.getInstance().OnInput(event.getCode(), false);
+        });
+    }
+
+    public LinkedHashMap<String,Integer> loadRanking() {
+
+        Path path2 = getPath("ranking");
+
+        LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
+
+        try (Scanner sc = new Scanner(Files.newBufferedReader(path2, Charset.defaultCharset()))){
+            while(sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] str = line.split("-");
+                String key = str[0];
+                Integer value = Integer.parseInt(str[1]);
+                map.put(key, value);
+                System.out.println(key+"-"+value);
+            }
+        }catch (IOException x){
+               System.err.format("Erro de E/S: %s%n", x);
+        }
+        return map;
+    }
+
+    public Path getPath(String file){
+        String currDir = Paths.get("").toAbsolutePath().toString();
+        String nameComplete = currDir+"\\src\\main\\files\\"+ file +".dat";
+        Path path = Paths.get(nameComplete);
+        return path;
     }
     
     public static void runBackgroundAnimation(Image img,GraphicsContext gc){

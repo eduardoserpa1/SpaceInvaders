@@ -1,6 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -209,7 +211,8 @@ public class Game {
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {
-        canhao.OnInput(keyCode, isPressed);
+        if(canhao != null)
+            canhao.OnInput(keyCode, isPressed);
     }
 
     public void Draw(GraphicsContext graphicsContext) {
