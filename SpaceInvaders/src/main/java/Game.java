@@ -103,6 +103,7 @@ public class Game {
             }
         }
     }
+    
     public void sinc_wave(){
 
         boolean second025 = frame%15==0;
@@ -113,7 +114,7 @@ public class Game {
         Object enemy = activeChars.get(spawner-1);
 
         if(activeChars.size()==1){
-            System.out.println("Wave " + wave + " liberada!");
+            //System.out.println("Wave " + wave + " liberada!");
             generateWave(); 
             wave++;
         }else{
@@ -163,7 +164,7 @@ public class Game {
         qtd_soldier = Integer.parseInt(str[2]);
         qtd_tanker =  Integer.parseInt(str[3]);
 
-        System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
+        //System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
         
         
         for (int i = 0; i < qtd_scout; i++) {

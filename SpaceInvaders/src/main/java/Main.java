@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +13,7 @@ import javax.swing.text.StyledEditorKit.BoldAction;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.css.Size;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -28,6 +30,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -48,6 +52,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
+
 /**
  * Handles window initialization and primary game setup
  * @author Bernardo Copstein, Rafael Copstein
@@ -65,7 +70,7 @@ public class Main extends Application {
         // Initialize Window
         stage.setTitle(Params.WINDOW_TITLE);
         stage.setResizable(false);
-
+        
         ranking = loadRanking();
 
         Image img = new Image("background\\bg.png",Params.WINDOW_WIDTH,Params.WINDOW_HEIGHT,true,true);
@@ -131,6 +136,7 @@ public class Main extends Application {
         //grid.setBackground(new Background(new BackgroundFill(Color.PURPLE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         grid.setMinSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
+        grid.setMaxSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
 
         grid.setPadding(new Insets(10, 10, 10, 10));
         
@@ -163,7 +169,7 @@ public class Main extends Application {
         cssText(valueHEADER);
         cssButton(back);
         GridPane.setConstraints(keyHEADER, 0, 1,1,1,HPos.LEFT,VPos.CENTER);
-        GridPane.setConstraints(valueHEADER, 1, 1,1,1,HPos.RIGHT,VPos.CENTER);
+        GridPane.setConstraints(valueHEADER, 1, 1,1,1,HPos.CENTER,VPos.CENTER);
         g.add(keyHEADER, 0, 1);
         g.add(valueHEADER, 1, 1);
         
@@ -174,7 +180,7 @@ public class Main extends Application {
             cssText(key);
             cssText(value);
             GridPane.setConstraints(key, 0, i,1,1,HPos.LEFT,VPos.CENTER);
-            GridPane.setConstraints(value, 1, i,1,1,HPos.RIGHT,VPos.CENTER);
+            GridPane.setConstraints(value, 1, i,1,1,HPos.CENTER,VPos.CENTER);
             g.add(key,0,i);
             g.add(value,1,i);
             i++;
@@ -206,22 +212,68 @@ public class Main extends Application {
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
                 public void handle(ActionEvent arg0) {
-                    saveScore(nome.getText(),score_to_save);
-                    setRankingMenuLayout(g);
+                    if(nome.getText().length() < 30){
+                        saveScore(nome.getText(),score_to_save);
+                        persisteRanking();
+                        setRankingMenuLayout(g);
+                    }
                 }
              });
+        
     }
+    
+    public void persisteRanking(){
+        Path path = getPath("ranking");
+    
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(path, StandardCharsets.UTF_8))){
+
+            for(Map.Entry<String, Integer> entrada : ranking.entrySet()){
+                writer.print(entrada.getKey() +"-"+ entrada.getValue() +"\n");
+            }
+
+        }catch (IOException x){
+
+            System.err.format("Erro de E/S: %s%n", x);
+
+        }  
+        
+    }
+
     public void saveScore(String nome, int score){
         
-        LinkedList keys = new LinkedList<String>();
-        LinkedList values = new LinkedList<Integer>();
+        LinkedList<String> keys = new LinkedList<String>();
+        LinkedList<Integer> values = new LinkedList<Integer>();
+    
 
         for(Map.Entry<String, Integer> entrada : ranking.entrySet()){
             keys.add(entrada.getKey());
             values.add(entrada.getValue());
         }
-        for(Object v:values){
-            System.out.println(v.toString());
+        int index = -1;
+        for(int i = values.size()-1; i >= 0; i--){
+            if(score > values.get(i)){
+                index = i;
+            }
+        }
+        if(index != -1){
+            values.add(index, score);
+            keys.add(index, nome);
+        }
+        if(values.size()<10 && index == -1){
+            values.add(score);
+            keys.add(nome);
+        }
+        if(values.size()>10){
+            values.remove(10);
+            keys.remove(10);
+        }
+        ranking = new LinkedHashMap<String,Integer>(10);
+        
+        for (int i = 0; i < values.size(); i++) {
+            if(i<=10){
+                ranking.put(keys.get(i), values.get(i));
+            }
+            
         }
     }
 
@@ -278,15 +330,23 @@ public class Main extends Application {
 
     public void cssButton(Button b){
         b.setStyle("-fx-max-width: infinity;");
-        b.setMinWidth(Params.WINDOW_WIDTH/2);
+        b.setMinWidth(400);
+        b.setMaxWidth(400);
         b.setMinHeight(40);
         b.setCursor(Cursor.HAND);
         b.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         b.setTextFill(Color.WHITE);
         b.setFont(Font.font(null, FontWeight.BOLD, 20));
         b.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        b.setOnMouseEntered(e -> b.setStyle(Params.HOVERED_BUTTON_STYLE));
-        b.setOnMouseExited(e -> b.setStyle(Params.IDLE_BUTTON_STYLE));
+        b.setOnMouseEntered(e -> {
+            b.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+            b.setTextFill(Color.BLACK);
+        });
+        b.setOnMouseExited(e -> {
+            b.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+            b.setTextFill(Color.WHITE);
+        });
+        
     }
 
     public void registerInputs(Scene scene){
@@ -303,7 +363,7 @@ public class Main extends Application {
 
         Path path2 = getPath("ranking");
 
-        LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
+        LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>(10);
 
         try (Scanner sc = new Scanner(Files.newBufferedReader(path2, Charset.defaultCharset()))){
             while(sc.hasNextLine()) {
