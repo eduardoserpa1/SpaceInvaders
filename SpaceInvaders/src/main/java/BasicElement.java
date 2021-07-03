@@ -1,10 +1,10 @@
 
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- * Represents the basic game character
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
+
 public abstract class BasicElement implements Character{
     int direction_horizontal = 0, direction_vertical = 0;
     int lminV = 0, lmaxV = Params.WINDOW_HEIGHT;

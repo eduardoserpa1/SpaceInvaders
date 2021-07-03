@@ -1,15 +1,19 @@
+import java.io.IOException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-/**
- * Represents a simple ball that crosses the screen over and over again
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
+
 public class Tanker extends BasicElement{
     private Canhao alvo;
     private int shot_timer = 0;
     protected int RELOAD_TIME = 60;
     protected int life = 7;
+
+    private Animator anime;
 
     public Tanker(int px,int py,Canhao canhao){
         super(px,py);
@@ -23,6 +27,13 @@ public class Tanker extends BasicElement{
         setPontos(24);
 
         setPosY(getY() - 100);
+
+        anime = new Animator("tanker");
+        try { 
+            anime.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -76,7 +87,6 @@ public class Tanker extends BasicElement{
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.setFill(Paint.valueOf("#FF00FF")); 
-        graphicsContext.fillOval(getX(), getY(), getLargura(), getAltura());
+        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
     }
 }

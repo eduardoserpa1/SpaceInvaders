@@ -9,6 +9,9 @@ import java.util.List;
 
 import javafx.scene.image.Image;
 
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
 public class Animator {
     
     private Path url;

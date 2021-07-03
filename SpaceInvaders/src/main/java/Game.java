@@ -12,10 +12,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * Handles the game lifecycle and behavior
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
 public class Game {
     private static Game game = null;
     private Canhao canhao;
@@ -26,10 +24,17 @@ public class Game {
     private int wave=1;
     private int frame = 0;
     private int spawner = 1;
+    private int canon_life;
 
     private Game(){
         gameOver = false;
         pontos = 0;
+        canhao = new Canhao(Params.WINDOW_WIDTH/2-32,Params.WINDOW_HEIGHT-90,4);
+        canon_life = canhao.getLife();
+    }
+
+    public int getCanonLife(){
+        return this.canon_life;
     }
 
     public void setGameOver(){
@@ -52,6 +57,7 @@ public class Game {
         game = new Game();
         return game;
     }
+    
     public static Game getInstance(){
         if (game == null){
             game = new Game();
@@ -69,11 +75,9 @@ public class Game {
     }
 
     public void Start() {
-        // Repositório de personagens
         activeChars = new LinkedList<>();
         preview_wave = new Stack<>();
-        // Adiciona o canhao
-        canhao = new Canhao(Params.WINDOW_WIDTH/2-32,Params.WINDOW_HEIGHT-90,4);
+        
         activeChars.add(canhao);
 
         for(Character c:activeChars){
@@ -87,7 +91,7 @@ public class Game {
         if (gameOver){
             return;
         }
-
+        canon_life = canhao.getLife();
         frame++;
         sinc_wave();
 
@@ -114,7 +118,6 @@ public class Game {
         Object enemy = activeChars.get(spawner-1);
 
         if(activeChars.size()==1){
-            //System.out.println("Wave " + wave + " liberada!");
             generateWave(); 
             wave++;
         }else{
@@ -163,10 +166,7 @@ public class Game {
         qtd_scout = Integer.parseInt(str[1]);
         qtd_soldier = Integer.parseInt(str[2]);
         qtd_tanker =  Integer.parseInt(str[3]);
-
-        //System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
-        
-        
+ 
         for (int i = 0; i < qtd_scout; i++) {
             activeChars.add(new Scout(Params.LEFT_BORDER, Params.EDGE_Y_TOP, 1));
             activeChars.add(new Scout(Params.RIGHT_BORDER - 24, Params.EDGE_Y_TOP, -1));

@@ -33,6 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -45,6 +46,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -53,10 +55,8 @@ import javafx.stage.Stage;
 
 
 
-/**
- * Handles window initialization and primary game setup
- * @author Bernardo Copstein, Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
 
 public class Main extends Application {
 
@@ -64,6 +64,7 @@ public class Main extends Application {
     public static LinkedHashMap<String,Integer> ranking;
     private boolean saving_score=false;
     private int score_to_save = 0;
+    private boolean exit=false;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -96,13 +97,18 @@ public class Main extends Application {
             {
                 long deltaTime = currentNanoTime - lastNanoTime;
 
-                if (!Main.isPaused) Game.getInstance().Update(currentNanoTime, deltaTime);
+                if (!Main.isPaused){
+                    Game.getInstance().Update(currentNanoTime, deltaTime);
+                } 
                 
                 gc.drawImage(img,0,screenroll,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
                 gc.drawImage(img,0, (screenroll - Params.WINDOW_HEIGHT) ,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
-
-                gc.fillText(" SCORE: "+Game.getInstance().getPontos(), 10, 10);
+                
                 Game.getInstance().Draw(gc);
+
+                if (!Main.isPaused){
+                    setInterfaceGame(gc);
+                } 
 
                 if (Game.getInstance().isGameOver()){
                     score_to_save = Game.getInstance().getPontos();
@@ -117,6 +123,11 @@ public class Main extends Application {
                     screenroll=0;
                 screenroll++;
                 
+                if(exit)
+                    stage.close();
+                
+                    
+
                 lastNanoTime = currentNanoTime;
             }
 
@@ -152,6 +163,76 @@ public class Main extends Application {
         grid.setAlignment(Pos.CENTER);
         nr.getChildren().add(grid);
         root.getChildren().add(nr);
+    }
+
+    public void setInterfaceGame(GraphicsContext gc){
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font(null, FontWeight.BOLD, 15));
+        gc.fillText("SCORE: "+Game.getInstance().getPontos(), 10, Params.WINDOW_HEIGHT-32);
+        gc.fillText("CANON LIFES: "+Game.getInstance().getCanonLife(), 10, Params.WINDOW_HEIGHT-12);
+    }
+
+    public void setMenuGameOver(GridPane g){
+        g.getChildren().clear();
+        Text gameover_text = new Text("GAME OVER");
+        Text score_text = new Text("FINAL SCORE: "+score_to_save);
+        Button continue_button = new Button("CONTINUE");
+        cssButton(continue_button);
+        cssText(gameover_text, 50);
+        cssText(score_text, 30);
+        GridPane.setConstraints(gameover_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(score_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(continue_button, 0,8,1,1,HPos.CENTER,VPos.CENTER);
+
+        continue_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent arg0) {
+                    setMenuSaveScore(g);
+                }
+             });
+
+        g.add(gameover_text, 0, 0);
+        g.add(score_text, 0, 1);
+        g.add(continue_button, 0, 8);
+        
+    }
+
+    public void setMenuMain(GridPane g){
+        g.getChildren().clear();
+        Button start = new Button("INICIAR NOVO JOGO");
+        Button rank = new Button("RANKING");
+        Text logo = new Text("SPACE INVADERS");
+        Button exit = new Button("EXIT");
+        
+        cssText(logo, 70);
+        cssButton(start);
+        cssButton(rank);
+        cssButton(exit);
+
+        start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent arg0) {
+                    Game.createNewInstance().Start();
+                    g.getChildren().clear();
+                    Main.isPaused = false;
+                }
+             });
+        rank.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent e) {
+                    setMenuRanking(g);
+                }
+        });
+        exit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent e) {
+                    ExitGame();
+                }
+        });
+
+        g.addColumn(0, logo, start, rank, exit);
+        
+        
     }
 
     public void setMenuRanking(GridPane g){
@@ -277,59 +358,6 @@ public class Main extends Application {
         }
     }
 
-    public void setMenuGameOver(GridPane g){
-        g.getChildren().clear();
-        Text gameover_text = new Text("GAME OVER");
-        Text score_text = new Text("SCORE: "+score_to_save);
-        Button continue_button = new Button("CONTINUE");
-        cssButton(continue_button);
-        cssText(gameover_text, 50);
-        cssText(score_text, 30);
-        GridPane.setConstraints(gameover_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
-        GridPane.setConstraints(score_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
-        GridPane.setConstraints(continue_button, 0,8,1,1,HPos.CENTER,VPos.CENTER);
-
-        continue_button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-                public void handle(ActionEvent arg0) {
-                    setMenuSaveScore(g);
-                }
-             });
-
-        g.add(gameover_text, 0, 0);
-        g.add(score_text, 0, 1);
-        g.add(continue_button, 0, 8);
-        
-    }
-
-    public void setMenuMain(GridPane g){
-        g.getChildren().clear();
-        Button start = new Button("INICIAR NOVO JOGO");
-        Button rank = new Button("RANKING");
-
-        cssButton(start);
-        cssButton(rank);
-
-        start.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-                public void handle(ActionEvent arg0) {
-                    Game.createNewInstance().Start();
-                    g.getChildren().clear();
-                    Main.isPaused = false;
-                }
-             });
-        rank.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-                public void handle(ActionEvent e) {
-                    setMenuRanking(g);
-                }
-        });
-
-        
-        g.addColumn(0, start, rank);
-        
-    }
-
     public void cssText(Text t,double size){
         t.setFont(Font.font(null, FontWeight.BOLD, size));
         t.setFill(Color.WHITE);
@@ -391,7 +419,7 @@ public class Main extends Application {
                 String key = str[0];
                 Integer value = Integer.parseInt(str[1]);
                 map.put(key, value);
-                System.out.println(key+"-"+value);
+              
             }
         }catch (IOException x){
                System.err.format("Erro de E/S: %s%n", x);
@@ -405,12 +433,12 @@ public class Main extends Application {
         Path path = Paths.get(nameComplete);
         return path;
     }
-
-    public Font setFont(int size){
-        Font font = Font.loadFont("src\\main\\resources\\fonts\\CLASSICARCADE.TTF", size);
-        return font;
-    }
     public static void main(String args[]) {
         launch();
     }
+    
+    public void ExitGame() {
+        this.exit = true;
+    }
+    
 }

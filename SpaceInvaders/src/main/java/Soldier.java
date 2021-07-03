@@ -1,12 +1,16 @@
+import java.io.IOException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-/**
- * Represents a simple ball that crosses the screen over and over again
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
+
 public class Soldier extends BasicElement{
     private int life = 4;
+
+    private Animator anime;
 
     public Soldier(int px,int py){
         super(px,py);
@@ -15,6 +19,13 @@ public class Soldier extends BasicElement{
         largura=50;
         setSpeed(2);
         setPontos(6);
+
+        anime = new Animator("soldier");
+        try { 
+            anime.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -44,15 +55,11 @@ public class Soldier extends BasicElement{
                 setDirH(getDirH() * (-1));
                 setPosX(getX() + getDirH() * 10);
 
-                //setPosX(getLMinH());
-                // Sorteia o passo de avanço [1,4]
-                //setSpeed(Params.getInstance().nextInt(4)+1);
             }
         }
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.setFill(Paint.valueOf("#FFFF00")); 
-        graphicsContext.fillOval(getX(), getY(), getLargura(), getAltura());
+        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
     }
 }

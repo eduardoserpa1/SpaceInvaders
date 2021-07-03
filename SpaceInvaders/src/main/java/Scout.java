@@ -1,12 +1,15 @@
+import java.io.IOException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-/**
- * Represents a simple ball that crosses the screen over and over again
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
 public class Scout extends BasicElement{
     private char pelotao;
+
+    private Animator anime;
 
     public Scout(int px,int py,int dirH){
         super(px,py);
@@ -19,6 +22,12 @@ public class Scout extends BasicElement{
         }else{
             pelotao = 'r';
             //setDirH(-1); 
+        }
+        anime = new Animator("scout");
+        try { 
+            anime.load();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -57,7 +66,6 @@ public class Scout extends BasicElement{
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.setFill(Paint.valueOf("#FF0000")); 
-        graphicsContext.fillOval(getX(), getY(), getLargura(), getAltura());
+        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
     }
 }
