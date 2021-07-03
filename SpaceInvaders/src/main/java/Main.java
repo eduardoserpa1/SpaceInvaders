@@ -145,16 +145,16 @@ public class Main extends Application {
 
 
         if(!saving_score)
-            setMainMenuLayout(grid);
+            setMenuMain(grid);
         else
-            setGameOverLayout(grid);
+            setMenuGameOver(grid);
         
         grid.setAlignment(Pos.CENTER);
         nr.getChildren().add(grid);
         root.getChildren().add(nr);
     }
 
-    public void setRankingMenuLayout(GridPane g){
+    public void setMenuRanking(GridPane g){
         g.getChildren().clear();
         Text title = new Text("RANKING");
         Button back = new Button("VOLTAR AO MENU");
@@ -165,11 +165,11 @@ public class Main extends Application {
         g.add(title, 0, 0, 2, 1);
         Text keyHEADER = new Text("PLAYER");
         Text valueHEADER = new Text("SCORE");
-        cssText(keyHEADER);
-        cssText(valueHEADER);
+        cssText(keyHEADER,25);
+        cssText(valueHEADER,25);
         cssButton(back);
         GridPane.setConstraints(keyHEADER, 0, 1,1,1,HPos.LEFT,VPos.CENTER);
-        GridPane.setConstraints(valueHEADER, 1, 1,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(valueHEADER, 1, 1,1,1,HPos.RIGHT,VPos.CENTER);
         g.add(keyHEADER, 0, 1);
         g.add(valueHEADER, 1, 1);
         
@@ -177,10 +177,10 @@ public class Main extends Application {
         for(Map.Entry<String, Integer> entrada : ranking.entrySet()){
             Text key = new Text((i-1)+"- "+entrada.getKey().toUpperCase());
             Text value = new Text( entrada.getValue().toString() );
-            cssText(key);
-            cssText(value);
+            cssText(key,18);
+            cssText(value,18);
             GridPane.setConstraints(key, 0, i,1,1,HPos.LEFT,VPos.CENTER);
-            GridPane.setConstraints(value, 1, i,1,1,HPos.CENTER,VPos.CENTER);
+            GridPane.setConstraints(value, 1, i,1,1,HPos.RIGHT,VPos.CENTER);
             g.add(key,0,i);
             g.add(value,1,i);
             i++;
@@ -191,14 +191,14 @@ public class Main extends Application {
         back.setOnAction(new EventHandler<ActionEvent>() {
             @Override
                 public void handle(ActionEvent arg0) {
-                    setMainMenuLayout(g);
+                    setMenuMain(g);
                 }
              });
 
         g.add(back, 0, i+1,2,1);
     }
     
-    public void setSaveScoreMenuLayout(GridPane g){
+    public void setMenuSaveScore(GridPane g){
         g.getChildren().clear();
         TextField nome = new TextField();
         Button save = new Button();
@@ -215,7 +215,7 @@ public class Main extends Application {
                     if(nome.getText().length() < 30){
                         saveScore(nome.getText(),score_to_save);
                         persisteRanking();
-                        setRankingMenuLayout(g);
+                        setMenuRanking(g);
                     }
                 }
              });
@@ -277,12 +277,32 @@ public class Main extends Application {
         }
     }
 
-    public void setGameOverLayout(GridPane g){
+    public void setMenuGameOver(GridPane g){
         g.getChildren().clear();
-        setSaveScoreMenuLayout(g);
+        Text gameover_text = new Text("GAME OVER");
+        Text score_text = new Text("SCORE: "+score_to_save);
+        Button continue_button = new Button("CONTINUE");
+        cssButton(continue_button);
+        cssText(gameover_text, 50);
+        cssText(score_text, 30);
+        GridPane.setConstraints(gameover_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(score_text, 0,0,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(continue_button, 0,8,1,1,HPos.CENTER,VPos.CENTER);
+
+        continue_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent arg0) {
+                    setMenuSaveScore(g);
+                }
+             });
+
+        g.add(gameover_text, 0, 0);
+        g.add(score_text, 0, 1);
+        g.add(continue_button, 0, 8);
+        
     }
 
-    public void setMainMenuLayout(GridPane g){
+    public void setMenuMain(GridPane g){
         g.getChildren().clear();
         Button start = new Button("INICIAR NOVO JOGO");
         Button rank = new Button("RANKING");
@@ -294,7 +314,6 @@ public class Main extends Application {
             @Override
                 public void handle(ActionEvent arg0) {
                     Game.createNewInstance().Start();
-                    //Main.jogador = nome.getText();
                     g.getChildren().clear();
                     Main.isPaused = false;
                 }
@@ -302,7 +321,7 @@ public class Main extends Application {
         rank.setOnAction(new EventHandler<ActionEvent>() {
             @Override
                 public void handle(ActionEvent e) {
-                    setRankingMenuLayout(g);
+                    setMenuRanking(g);
                 }
         });
 
@@ -311,8 +330,8 @@ public class Main extends Application {
         
     }
 
-    public void cssText(Text t){
-        t.setFont(Font.font(null, FontWeight.BOLD, 25));
+    public void cssText(Text t,double size){
+        t.setFont(Font.font(null, FontWeight.BOLD, size));
         t.setFill(Color.WHITE);
     }
 
@@ -386,13 +405,12 @@ public class Main extends Application {
         Path path = Paths.get(nameComplete);
         return path;
     }
-    
-    public static void runBackgroundAnimation(Image img,GraphicsContext gc){
-        gc.drawImage(img,0,0,Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT);
-    }
 
+    public Font setFont(int size){
+        Font font = Font.loadFont("src\\main\\resources\\fonts\\CLASSICARCADE.TTF", size);
+        return font;
+    }
     public static void main(String args[]) {
         launch();
-
     }
 }
