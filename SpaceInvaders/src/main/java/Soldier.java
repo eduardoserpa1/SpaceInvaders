@@ -10,7 +10,8 @@ import javafx.scene.paint.Paint;
 public class Soldier extends BasicElement{
     private int life = 4;
 
-    private Animator anime;
+    private Animator anime_1;
+    private Animator anime_2;
 
     public Soldier(int px,int py){
         super(px,py);
@@ -20,9 +21,11 @@ public class Soldier extends BasicElement{
         setSpeed(2);
         setPontos(6);
 
-        anime = new Animator("soldier");
+        anime_1 = new Animator("soldier\\stage1");
+        anime_2 = new Animator("soldier\\stage2");
         try { 
-            anime.load();
+            anime_1.load();
+            anime_2.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,6 +63,10 @@ public class Soldier extends BasicElement{
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        if(life>=2){
+            graphicsContext.drawImage(anime_1.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }else{
+            graphicsContext.drawImage(anime_2.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }
     }
 }

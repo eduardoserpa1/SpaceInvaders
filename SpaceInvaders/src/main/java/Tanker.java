@@ -13,7 +13,9 @@ public class Tanker extends BasicElement{
     protected int RELOAD_TIME = 60;
     protected int life = 7;
 
-    private Animator anime;
+    private Animator anime_1;
+    private Animator anime_2;
+    private Animator anime_3;
 
     public Tanker(int px,int py,Canhao canhao){
         super(px,py);
@@ -28,9 +30,13 @@ public class Tanker extends BasicElement{
 
         setPosY(getY() - 100);
 
-        anime = new Animator("tanker");
+        anime_1 = new Animator("tanker\\stage1");
+        anime_2 = new Animator("tanker\\stage2");
+        anime_3 = new Animator("tanker\\stage3");
         try { 
-            anime.load();
+            anime_1.load();
+            anime_2.load();
+            anime_3.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,6 +93,14 @@ public class Tanker extends BasicElement{
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        if(life>=5){
+            graphicsContext.drawImage(anime_1.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }else
+        if(life>=3){
+            graphicsContext.drawImage(anime_2.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }else
+        if(life>=1){
+            graphicsContext.drawImage(anime_3.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }   
     }
 }

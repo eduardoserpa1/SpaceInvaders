@@ -8,7 +8,8 @@ import javafx.scene.paint.Paint;
 
 public class Berserker extends Tanker{
 
-    private Animator anime;
+    private Animator anime_1;
+    private Animator anime_2;
 
     public Berserker(int px,int py, Canhao canhao){
         super(px,py,canhao);
@@ -21,9 +22,11 @@ public class Berserker extends Tanker{
         setPontos(12);
         setPosY(Params.EDGE_Y_TOP);
 
-        anime = new Animator("berserker");
+        anime_1 = new Animator("berserker\\stage1");
+        anime_2 = new Animator("berserker\\stage2");
         try { 
-            anime.load();
+            anime_1.load();
+            anime_2.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,6 +43,10 @@ public class Berserker extends Tanker{
     }
 
     public void Draw(GraphicsContext graphicsContext){
-        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        if(life>1){
+            graphicsContext.drawImage(anime_1.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }else{
+            graphicsContext.drawImage(anime_2.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
+        }
     }
 }

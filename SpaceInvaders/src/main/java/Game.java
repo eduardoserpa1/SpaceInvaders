@@ -196,7 +196,6 @@ public class Game {
             while(sc.hasNextLine()) {
                 String line = sc.nextLine();
                 preview_wave.push(line);
-                System.out.println(line);
             }
         }catch (IOException x){
                System.err.format("Erro de E/S: %s%n", x);
