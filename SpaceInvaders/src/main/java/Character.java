@@ -1,9 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- * Represents the basic game character
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
 public interface Character {
     int getX();
     int getY();
@@ -12,7 +10,7 @@ public interface Character {
 
     boolean isEnemy();
     void touchBottom();
-
+ 
     void testaColisao(Character c);
     boolean jaColidiu();
     void setColidiu();

@@ -7,3 +7,4 @@ import javafx.scene.input.KeyCode;
 public interface KeyboardCtrl {
     void OnInput(KeyCode keyCode, boolean isPressed);
 }
+ 

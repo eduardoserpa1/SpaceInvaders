@@ -1,6 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 import java.io.IOException;
@@ -8,12 +9,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * Handles the game lifecycle and behavior
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
 public class Game {
     private static Game game = null;
     private Canhao canhao;
@@ -24,10 +24,17 @@ public class Game {
     private int wave=1;
     private int frame = 0;
     private int spawner = 1;
+    private int canon_life;
 
     private Game(){
         gameOver = false;
         pontos = 0;
+        canhao = new Canhao(Params.WINDOW_WIDTH/2-32,Params.WINDOW_HEIGHT-90,4);
+        canon_life = canhao.getLife();
+    }
+
+    public int getCanonLife(){
+        return this.canon_life;
     }
 
     public void setGameOver(){
@@ -46,6 +53,11 @@ public class Game {
         pontos += pts;
     }
 
+    public static Game createNewInstance(){
+        game = new Game();
+        return game;
+    }
+    
     public static Game getInstance(){
         if (game == null){
             game = new Game();
@@ -63,11 +75,9 @@ public class Game {
     }
 
     public void Start() {
-        // Repositório de personagens
         activeChars = new LinkedList<>();
         preview_wave = new Stack<>();
-        // Adiciona o canhao
-        canhao = new Canhao(350,510,4);
+        
         activeChars.add(canhao);
 
         for(Character c:activeChars){
@@ -81,7 +91,7 @@ public class Game {
         if (gameOver){
             return;
         }
-
+        canon_life = canhao.getLife();
         frame++;
         sinc_wave();
 
@@ -97,17 +107,16 @@ public class Game {
             }
         }
     }
+    
     public void sinc_wave(){
 
         boolean second025 = frame%15==0;
         boolean second05 = frame%30==0;
-        boolean second1 = frame%60==0;
         boolean second2 = frame%120==0;
 
         Object enemy = activeChars.get(spawner-1);
 
         if(activeChars.size()==1){
-            System.out.println("Wave " + wave + " liberada!");
             generateWave(); 
             wave++;
         }else{
@@ -156,10 +165,7 @@ public class Game {
         qtd_scout = Integer.parseInt(str[1]);
         qtd_soldier = Integer.parseInt(str[2]);
         qtd_tanker =  Integer.parseInt(str[3]);
-
-        System.out.println(qtd_berserker+" - "+qtd_scout+" - "+qtd_soldier+" - "+qtd_tanker);
-        
-        
+ 
         for (int i = 0; i < qtd_scout; i++) {
             activeChars.add(new Scout(Params.LEFT_BORDER, Params.EDGE_Y_TOP, 1));
             activeChars.add(new Scout(Params.RIGHT_BORDER - 24, Params.EDGE_Y_TOP, -1));
@@ -189,7 +195,6 @@ public class Game {
             while(sc.hasNextLine()) {
                 String line = sc.nextLine();
                 preview_wave.push(line);
-                System.out.println(line);
             }
         }catch (IOException x){
                System.err.format("Erro de E/S: %s%n", x);
@@ -205,7 +210,8 @@ public class Game {
     }
 
     public void OnInput(KeyCode keyCode, boolean isPressed) {
-        canhao.OnInput(keyCode, isPressed);
+        if(canhao != null)
+            canhao.OnInput(keyCode, isPressed);
     }
 
     public void Draw(GraphicsContext graphicsContext) {

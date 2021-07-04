@@ -4,14 +4,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 
-/**
- * Represents the game Gun
- * @author Bernardo Copstein, Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
 public class Canhao extends BasicElement implements KeyboardCtrl{
     private int RELOAD_TIME = 300000000; // Time is in nanoseconds
     private int shot_timer = 0;
-
+    private int life = 3;
+ 
     private Animator anime;
 
     public Canhao(int px,int py,int speed){
@@ -33,8 +33,14 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
 
     @Override
     public void Update(long deltaTime) {
+        
         if (jaColidiu()){
-            Game.getInstance().setGameOver();
+            if(life<=1){
+                Game.getInstance().setGameOver();
+            }else{
+                life--;
+                colidiu = false;
+            }
         }
         //System.out.println(getDirH());
         if(getX() >= 0 && getDirH() == (-1)){
@@ -67,24 +73,25 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
                 shot_timer = RELOAD_TIME;
             }
         }
-        //if (keyCode == KeyCode.UP) do nothing
-        //if (keyCode == KeyCode.DOWN) do nothing
     }
 
+    public int getLife(){
+        return this.life;
+    }
 
     @Override
     public int getAltura(){
-        return 80;
+        return this.altura;
     }
 
     @Override
     public int getLargura(){
-        return 32;
+        return this.largura;
     }
 
     @Override
     public void Draw(GraphicsContext graphicsContext) {
-        graphicsContext.drawImage(anime.updateSprite(5),(double)getX(), (double)getY()+16, (double)largura, (double)altura);
+        graphicsContext.drawImage(anime.updateSprite(10),(double)getX(), (double)getY(), (double)largura, (double)altura);
         
     }
 }

@@ -9,6 +9,9 @@ import java.util.List;
 
 import javafx.scene.image.Image;
 
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+
 public class Animator {
     
     private Path url;
@@ -18,7 +21,6 @@ public class Animator {
 
     public Animator(String url){
         frames = new LinkedList<Image>();
-        //System.out.println("------------" + url);
         this.url = Paths.get(System.getProperty("user.dir") + "\\src\\main\\resources\\" + url);
         this.url_string = url;
     }
@@ -28,8 +30,6 @@ public class Animator {
         try ( DirectoryStream<Path> stream = Files.newDirectoryStream(url,"*.png")){
             for(Path p : stream){
                String dir = url_string +"\\"+ p.getFileName();
-               //System.out.println("----"+dir);
-               //Image a = new Image(dir,32,32,true,true);
                frames.add(new Image(dir,32,32,true,true));
             }
           }
@@ -45,13 +45,5 @@ public class Animator {
   
         return frames.get(coef);
     }
-    
-    
-    /*
-    public Path getPath(String file){
-        String currDir = Paths.get("").toAbsolutePath().toString();
-        String nameComplete = currDir+"\\"+file;
-        Path path = Paths.get(nameComplete);
-        return path;
-    }*/
+
 }

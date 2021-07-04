@@ -1,10 +1,10 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-/**
- * Represents a shot that crosses the screen from bottom to up and then dismiss
- * @author Bernardo Copstein and Rafael Copstein
- */
+//José Eduardo Rodrigues Serpa - 20200311-7
+//Henrique Barcellos Lima - 20204006-9
+ 
+
 public class Shot extends BasicElement{
     public Object shooter;
 
@@ -29,7 +29,7 @@ public class Shot extends BasicElement{
         }
         
         
-        setSpeed(5);
+        setSpeed(6);
     }
 
     @Override
