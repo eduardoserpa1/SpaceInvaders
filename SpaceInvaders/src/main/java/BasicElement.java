@@ -16,7 +16,7 @@ public abstract class BasicElement implements Character{
     int speed = 1;
     boolean enemy=false;
     int pontos = 1; 
-
+ 
     public BasicElement(int startX,int startY){
         posX = startX;
         posY = startY;

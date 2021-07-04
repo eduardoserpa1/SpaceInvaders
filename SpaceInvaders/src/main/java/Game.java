@@ -112,7 +112,6 @@ public class Game {
 
         boolean second025 = frame%15==0;
         boolean second05 = frame%30==0;
-        boolean second1 = frame%60==0;
         boolean second2 = frame%120==0;
 
         Object enemy = activeChars.get(spawner-1);

@@ -4,7 +4,7 @@ import java.util.Random;
 //Henrique Barcellos Lima - 20204006-9
 
 public class Params {
-    public static final String WINDOW_TITLE = "SPACE INVADERS v0.10.0";
+    public static final String WINDOW_TITLE = "SPACE INVADERS v1.2.0";
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
     public static final int LEFT_BORDER = 10;

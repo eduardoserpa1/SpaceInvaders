@@ -3,7 +3,7 @@ import javafx.scene.paint.Paint;
 
 //José Eduardo Rodrigues Serpa - 20200311-7
 //Henrique Barcellos Lima - 20204006-9
-
+ 
 
 public class Shot extends BasicElement{
     public Object shooter;

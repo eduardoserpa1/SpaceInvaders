@@ -10,7 +10,7 @@ public interface Character {
 
     boolean isEnemy();
     void touchBottom();
-
+ 
     void testaColisao(Character c);
     boolean jaColidiu();
     void setColidiu();

@@ -53,7 +53,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-
+ 
 
 //José Eduardo Rodrigues Serpa - 20200311-7
 //Henrique Barcellos Lima - 20204006-9
@@ -144,7 +144,6 @@ public class Main extends Application {
         GridPane grid = new GridPane();
 
         registerInputs(scene);
-        //grid.setBackground(new Background(new BackgroundFill(Color.PURPLE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         grid.setMinSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
         grid.setMaxSize(Params.WINDOW_WIDTH, Params.WINDOW_HEIGHT); 
@@ -169,7 +168,7 @@ public class Main extends Application {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(null, FontWeight.BOLD, 15));
         gc.fillText("SCORE: "+Game.getInstance().getPontos(), 10, Params.WINDOW_HEIGHT-32);
-        gc.fillText("CANON LIFES: "+Game.getInstance().getCanonLife(), 10, Params.WINDOW_HEIGHT-12);
+        gc.fillText("LIFE: "+Game.getInstance().getCanonLife(), 10, Params.WINDOW_HEIGHT-12);
     }
 
     public void setMenuGameOver(GridPane g){

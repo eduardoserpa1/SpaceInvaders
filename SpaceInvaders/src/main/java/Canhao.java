@@ -11,7 +11,7 @@ public class Canhao extends BasicElement implements KeyboardCtrl{
     private int RELOAD_TIME = 300000000; // Time is in nanoseconds
     private int shot_timer = 0;
     private int life = 3;
-
+ 
     private Animator anime;
 
     public Canhao(int px,int py,int speed){

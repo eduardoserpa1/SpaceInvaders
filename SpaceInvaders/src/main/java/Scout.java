@@ -8,7 +8,7 @@ import javafx.scene.paint.Paint;
 
 public class Scout extends BasicElement{
     private char pelotao;
-
+ 
     private Animator anime;
 
     public Scout(int px,int py,int dirH){
@@ -18,10 +18,8 @@ public class Scout extends BasicElement{
         setPontos(2);
         if(dirH>0){
             pelotao = 'l';
-            //setDirH(1);
         }else{
             pelotao = 'r';
-            //setDirH(-1); 
         }
         anime = new Animator("scout");
         try { 
